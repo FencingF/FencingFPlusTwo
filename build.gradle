@@ -1,0 +1,120 @@
+/**
+ * @author bush & perry.
+ * @description Original by bush & fully remade by perry. Perry gave this to me to put into here. Cleaned by Smokeybear12
+ */
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://repo.spongepowered.org/maven' }
+        maven { url 'https://files.minecraftforge.net/maven' }
+        maven { url 'https://jitpack.io' }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3.4'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.4'
+        classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
+    }
+}
+
+apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'org.spongepowered.mixin'
+
+
+version = '2.0.0' // Jar output Version
+group = 'org.fenci.fencingfplus2'
+archivesBaseName = 'FencingF+2' // Jar output name
+
+sourceCompatibility = targetCompatibility = '1.8'
+compileJava {
+    sourceCompatibility = targetCompatibility = '1.8'
+    options.encoding = 'UTF-8'
+}
+
+// Run Configurations
+minecraft {
+    replace '%version%', project.version
+    version = '1.12.2-14.23.5.2847'
+    runDir = 'run'
+    mappings = 'stable_39'
+    coreMod = 'org.fenci.fencingfplus2.mixin.ForgeMixinLoader'
+    makeObfSourceJar = false
+}
+
+// Build Configurations
+jar {
+    manifest {
+        attributes(
+                'MixinConfigs': 'mixins.fencingf.json',
+                'tweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
+                'TweakOrder': 0,
+                'FMLCorePluginContainsFMLMod': 'true',
+                'FMLCorePlugin': 'org.fenci.fencingfplus2.mixin.ForgeMixinLoader',
+                'ForceLoadAsMod': 'true', // On runClient: 'false'; On build: 'true'
+                'FMLAT': 'ff2_at.cfg',
+        )
+    }
+}
+
+
+repositories {
+    mavenCentral()
+    maven { url 'https://repo.spongepowered.org/maven' }
+    maven { url "https://jitpack.io"}
+}
+
+dependencies {
+    compile("org.spongepowered:mixin:0.7.11-SNAPSHOT") {
+        exclude module: 'launchwrapper'
+        exclude module: 'guava'
+        exclude module: 'gson'
+        exclude module: 'commons-io'
+        exclude module: 'log4j-core'
+
+    compile('com.github.Litarvan:OpenAuth:1.1.2')
+    }
+
+    annotationProcessor("org.spongepowered:mixin:0.8.2:processor") {
+        exclude module: 'gson'
+    }
+    compile 'club.minnced:java-discord-rpc:2.0.2'
+}
+
+reobf {
+    shadowJar {
+        mappingType = 'SEARGE'
+        classpath = sourceSets.main.compileClasspath
+    }
+}
+
+mixin {
+    defaultObfuscationEnv searge
+    sourceSets.main {
+        ext.refMap = 'mixins.fencingf.refmap.json'
+    }
+}
+
+shadowJar {
+    dependencies {
+        include dependency('org.spongepowered:mixin')
+        include dependency('club.minnced:java-discord-rpc')
+        include dependency('com.github.Litarvan:OpenAuth:1.1.2')
+    }
+
+    exclude 'dummyThing', 'LICENSE.txt', 'org/**/*.html', 'META-INF/maven/**'
+    classifier = ''
+}
+
+processResources {
+    inputs.property 'version', project.version
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+        expand 'version': project.version
+    }
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+    rename '(.+_at.cfg)', 'META-INF/$1'
+}
+
+build.dependsOn shadowJar
