@@ -57,8 +57,7 @@ public class ConfigManager {
             fileWriter.flush();
             fileWriter.close();
 
-        } catch (Exception e) {
-        }
+        } catch (Exception e) {}
     }
 
     public void loadPrefix() {
@@ -76,38 +75,45 @@ public class ConfigManager {
 
     }
 
-    /*
-    public void saveFriends() {
-        try {
-            File friendFile = new File(Covenant_Client.getAbsolutePath(), "Other/" + "Friends/" + "friends.json");
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            String json = gson.toJson(Covenant.INSTANCE.friendManager.getFriends());
-            OutputStreamWriter file;
-            file = new OutputStreamWriter(new FileOutputStream(friendFile), StandardCharsets.UTF_8);
-            file.write(json);
-            file.close();
-        } catch (Exception e) {
-        }
-    }
-    public void loadFriends() {
-        File friendFile = new File(Covenant_Client.getAbsolutePath(), "Other/" + "Friends/" + "friends.json");
-        try {
-            Gson gson = new Gson();
-            Reader reader = Files.newBufferedReader(Paths.get(String.valueOf(friendFile)));
-            Covenant.INSTANCE.friendManager.setFriends(gson.fromJson(reader, new TypeToken<ArrayList<Friend>>(){}.getType()));
-            reader.close();
-        } catch (Exception e) {
-        }
-    }
-     */
+
+//    public void saveFriends() {
+//        try {
+//            File friendFile = new File(FencingFPlusTwo.getAbsolutePath(), "Other/" + "Friends" + ".json");
+//            friendFile.mkdirs();
+//            if (!friendFile.exists()) {
+//                friendFile.createNewFile();
+//            }
+//            JsonObject object = new JsonObject();
+//            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+//            object.addProperty("friends", gson.toJson(FencingFPlus2.INSTANCE.friendManager.getFriends()));
+//            FileWriter fileWriter = new FileWriter(friendFile);
+//            fileWriter.write(object.toString());
+//            fileWriter.flush();
+//            fileWriter.close();
+//        } catch (Exception e) {
+//        }
+//    }
+//    public void loadFriends() {
+//        try {
+//            File friendFile = new File(FencingFPlusTwo.getAbsolutePath(), "Other/" + "Friends" + ".json");
+//            friendFile.getParentFile().mkdirs();
+//            if (!friendFile.exists()) friendFile.createNewFile();
+//            JsonObject object = new JsonParser().parse(content).getAsJsonObject();
+//            Reader reader = Files.newBufferedReader(Paths.get(friendFile));
+//            FencingFPlus2.INSTANCE.friendManager.setFriends(gson.fromJson(reader, new TypeToken<ArrayList<Friend>>(){}.getType()));
+//
+//            reader.close();
+//        } catch (Exception e) {
+//        }
+//    }
+
 
     public void save() {
         try {
             for (Module module : FencingFPlus2.INSTANCE.moduleManager.getModules()) {
                 File moduleFile = new File(FencingFPlusTwo.getAbsolutePath(), "Settings/" + module.getCategory() + "/" + module.getName() + ".json");
                 moduleFile.getParentFile().mkdirs();
-                if (!moduleFile.exists())
-                    moduleFile.createNewFile();
+                if (!moduleFile.exists()) moduleFile.createNewFile();
                 JsonObject object = new JsonObject();
                 object.addProperty("bind", Keyboard.getKeyName(module.getKeybind()));
                 object.addProperty("enabled", module.isOn());
@@ -130,8 +136,7 @@ public class ConfigManager {
             try {
                 File moduleFile = new File(FencingFPlusTwo.getAbsolutePath(), "Settings/" + module.getCategory() + "/" + module.getName() + ".json");
                 moduleFile.getParentFile().mkdirs();
-                if (!moduleFile.exists())
-                    moduleFile.createNewFile();
+                if (!moduleFile.exists()) moduleFile.createNewFile();
                 String content = Files.readAllLines(moduleFile.toPath()).stream().collect(Collectors.joining());
                 JsonObject object = new JsonParser().parse(content).getAsJsonObject();
                 int bind = Keyboard.getKeyIndex(object.get("bind").getAsString());

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class FriendManager {
-    private final ArrayList<Friend> friends = new ArrayList<>();
+    private ArrayList<Friend> friends = new ArrayList<>();
     EntityPlayer friendedPlayer;
     UUID frienduuid;
 
@@ -54,6 +54,20 @@ public class FriendManager {
             }
         }
         return false;
+    }
+
+    public Friend getFriendByName(String name) {
+        Friend friend1 = null;
+        for (Friend friend : getFriends()) {
+            if (friend.getAlias().equals(name)) {
+                friend1 = friend;
+            }
+        }
+        return friend1;
+    }
+
+    public void setFriends(ArrayList<Friend> friendsToAdd) {
+        friends = friendsToAdd;
     }
 
     public boolean isFriend(UUID uuid) {

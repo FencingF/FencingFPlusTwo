@@ -29,7 +29,7 @@ public class LogoutSpots extends Module {
 
     private final List<LogoutSpot> logoutSpots = new CopyOnWriteArrayList<>();
 
-    private ModelPlayer playerModel;
+    public ModelPlayer playerModel;
     Color lineColorS;
     Color fillColorS;
 

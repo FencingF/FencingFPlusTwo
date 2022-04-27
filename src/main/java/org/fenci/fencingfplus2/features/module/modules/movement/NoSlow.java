@@ -31,6 +31,7 @@ public class NoSlow extends Module {
     //public static final Setting<Boolean> soulsand = new Setting<>("Soulsand", false);
     //public static final Setting<Boolean> slime = new Setting<>("Slime", false); // TODO: 12/18/2021 This stuff
     public static final Setting<Boolean> inventory = new Setting<>("Inventory", true);
+    public static final Setting<Boolean> webs = new Setting<>("Webs", true);
     public static final Setting<Integer> lookSpeed = new Setting<>("LookSpeed", 5, 0, 10);
     // anti-cheat
     public static final Setting<Bypass> bypass = new Setting<>("Bypass", Bypass.NCP);
@@ -52,8 +53,7 @@ public class NoSlow extends Module {
 
     @Override
     public void onUpdate() {
-        if (mc.player.isElytraFlying()) return;
-        if (sneaking && !Globals.mc.player.isHandActive()) {
+        if (sneaking && !Globals.mc.player.isHandActive() && !mc.player.isElytraFlying()) {
             sneaking = false;
             Globals.mc.player.connection.sendPacket(new CPacketEntityAction(Globals.mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
         }

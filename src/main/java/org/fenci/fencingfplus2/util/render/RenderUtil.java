@@ -54,8 +54,8 @@ public class RenderUtil implements Globals {
     }
 
     public static void createChamsPre() {
-        mc.getRenderManager().setRenderShadow(false);
-        mc.getRenderManager().setRenderOutlines(false);
+//        mc.getRenderManager().setRenderShadow(false);
+//        mc.getRenderManager().setRenderOutlines(false);
         GlStateManager.pushMatrix();
         GlStateManager.depthMask(true);
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.0F);
@@ -65,8 +65,8 @@ public class RenderUtil implements Globals {
     }
 
     public static void createColorPre(boolean isPlayer, int red, int green, int blue, int alpha) {
-        mc.getRenderManager().setRenderShadow(false);
-        mc.getRenderManager().setRenderOutlines(false);
+//        mc.getRenderManager().setRenderShadow(false);
+//        mc.getRenderManager().setRenderOutlines(false);
         GlStateManager.pushMatrix();
         GlStateManager.depthMask(true);
         glEnable(GL11.GL_POLYGON_OFFSET_FILL);
@@ -94,9 +94,6 @@ public class RenderUtil implements Globals {
         mc.getRenderManager().setRenderShadow(shadow);
         GlStateManager.pushMatrix();
         GlStateManager.depthMask(false);
-        if (!isPlayer) {
-            GlStateManager.disableBlendProfile(GlStateManager.Profile.TRANSPARENT_MODEL);
-        }
         glDisable(GL11.GL_POLYGON_OFFSET_FILL);
         glPolygonOffset(1.0f, -5300000.0f);
         glEnable(GL11.GL_TEXTURE_2D);

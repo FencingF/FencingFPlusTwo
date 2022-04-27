@@ -1,10 +1,17 @@
 package org.fenci.fencingfplus2.manager.friend;
 
+import org.fenci.fencingfplus2.util.player.PlayerUtil;
+
 import java.util.UUID;
 
 public class Friend {
     private final UUID uuid;
     private String alias;
+
+    public Friend(String alias) {
+        this.alias = alias;
+        this.uuid = PlayerUtil.getUUIDFromName(alias);
+    }
 
     public Friend(UUID uuid, String alias) {
         this.uuid = uuid;

@@ -192,6 +192,8 @@ public class Nametags extends Module {
             final float green = (stack.getMaxDamage() - (float)stack.getItemDamage()) / stack.getMaxDamage();
             final float red = 1.0f - green;
             final int dmg = 100 - (int)(red * 100.0f);
+            assert red <= 255;
+            assert green <= 255;
             RenderUtil.drawStringWithShadow(dmg + "%", x * 2 + 8, y + 26, new Color((int)(red * 255.0f), (int)(green * 255.0f), 0).getRGB());
         }
         final NBTTagList enchants = stack.getEnchantmentTagList();

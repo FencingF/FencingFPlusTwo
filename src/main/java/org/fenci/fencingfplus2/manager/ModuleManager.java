@@ -99,6 +99,7 @@ public class ModuleManager implements Globals {
                 //new HotbarReplenish(),
                 new PacketLogger(),
                 new PingSpoof(),
+                new Timer(),
                 new TotemName(),
                 new XCarry(),
 
@@ -117,6 +118,7 @@ public class ModuleManager implements Globals {
                 //chat
                 new AntiLog4J(),
                 new AutoEZ(),
+                new CustomChat(),
                 new Notifier()
 
         );

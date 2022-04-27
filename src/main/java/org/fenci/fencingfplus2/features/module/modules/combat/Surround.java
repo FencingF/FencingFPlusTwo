@@ -74,7 +74,7 @@ public class Surround extends Module {
                     BlockUtil.placeBlock(pos, EnumHand.MAIN_HAND, rotate.getValue(), false);
                     InventoryUtil.switchToSlot(previousSlot);
                     if (antiGhost.getValue() && !(BlockUtil.getBlock(pos) instanceof BlockContainer)) {
-                        mc.player.connection.sendPacket(new CPacketPlayerDigging(CPacketPlayerDigging.Action.START_DESTROY_BLOCK, pos, EnumFacing.UP));
+                        mc.player.connection.sendPacket(new CPacketPlayerDigging(CPacketPlayerDigging.Action.ABORT_DESTROY_BLOCK, pos, EnumFacing.UP));
                     }
                     delayTimer.reset();
                 }

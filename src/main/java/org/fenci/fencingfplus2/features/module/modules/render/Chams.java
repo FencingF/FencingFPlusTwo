@@ -41,15 +41,15 @@ public class Chams extends Module {
         }
         Entity entity = event.getEntity();
         if (entity instanceof EntityPlayer && players.getValue() && (self.getValue() || entity != mc.player)) {
-            renderChamsPre(true);
+            renderChamsPre();
         }
 
         if (mobs.getValue() && (entity instanceof EntityCreature || entity instanceof EntitySlime || entity instanceof EntitySquid)) {
-            renderChamsPre(false);
+            renderChamsPre();
         }
 
         if (crystals.getValue() && entity instanceof EntityEnderCrystal) {
-            renderChamsPre(false);
+            renderChamsPre();
         }
     }
 
@@ -59,31 +59,31 @@ public class Chams extends Module {
         else if (event.getType() == EventRenderEntity.Type.TEXTURE && texture.getValue().equals(Texture.Color)) return;
         Entity entity = event.getEntity();
         if (entity instanceof EntityPlayer && players.getValue() && (self.getValue() || entity != mc.player)) {
-            renderChamsPost(true);
+            renderChamsPost();
         }
 
         if (mobs.getValue() && (entity instanceof EntityCreature || entity instanceof EntitySlime || entity instanceof EntitySquid)) {
-            renderChamsPost(false);
+            renderChamsPost();
         }
 
         if (crystals.getValue() && entity instanceof EntityEnderCrystal) {
-            renderChamsPost(false);
+            renderChamsPost();
         }
     }
 
-    private void renderChamsPre(boolean isPlayer) {
+    private void renderChamsPre() {
         if (texture.getValue().equals(Texture.Skin)) {
             RenderUtil.createChamsPre();
         } else if (texture.getValue().equals(Texture.Color)) {
-            RenderUtil.createColorPre(isPlayer, fillred.getValue(), fillgreen.getValue(), fillblue.getValue(), alpha.getValue());
+            RenderUtil.createColorPre(true, fillred.getValue(), fillgreen.getValue(), fillblue.getValue(), alpha.getValue());
         }
     }
 
-    public void renderChamsPost(boolean isPlayer) {
+    public void renderChamsPost() {
         if (texture.getValue().equals(Texture.Skin)) {
             RenderUtil.createChamsPost();
         } else if (texture.getValue().equals(Texture.Color)) {
-            RenderUtil.createColorPost(isPlayer);
+            RenderUtil.createColorPost(true);
         }
     }
 

@@ -15,7 +15,7 @@ import org.lwjgl.opengl.Display;
 public class FencingFPlus2 {
     public static final String NAME = "FencingF+2";
     public static final String ID = "fencingf+2";
-    public static final String VERSION = "2.0.0";
+    public static final String VERSION = "2.1.0";
     public static final Logger LOGGER = LogManager.getLogger("FencingFPlus2");
 
     @Mod.Instance

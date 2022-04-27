@@ -352,33 +352,6 @@ public class AutoCrystal extends Module {
             attackedCrystals.put(crystal, 1);
         }
     }
-
-    /**
-    This was not working properly, so I am temporarily commenting it out
-     */
-
-//    public Map<BlockPos, EntityPlayer> getTargetAndPos() {
-//        getAllDamages(); // this should add all the damages before it can decide if its null
-//        if (damagesForPlayer.isEmpty()) return null;
-//        Map<BlockPos, EntityPlayer> targetAndPos = new HashMap<>();
-//        BlockPos finalPos = null;
-//        for (BlockPos pos : damagesForPlayer.keySet()) {
-//            if (finalPos != null) {
-//                if (CrystalUtil.calculateDamage(pos, damagesForPlayer.get(pos)) < CrystalUtil.calculateDamage(finalPos, damagesForPlayer.get(pos))) continue;
-//            }
-//            finalPos = pos;
-//        }
-//        targetAndPos.put(finalPos, damagesForPlayer.get(finalPos)); //Fuck Idk if this works //TODO: Check on this please its really late and I can't think
-//        return targetAndPos;
-//    }
-//
-//    public void getAllDamages() { //bro its like 2 am right now im exhausted im just ganna do this the easy way and just fix it later also this has no return statement cause its just adding stuff to a hashset that I made at the top
-//        if (getPossibleTargets().isEmpty()) return;
-//        for (EntityPlayer player : getPossibleTargets()) {
-//            damagesForPlayer.put(calculateBlockForPlayer(player), player);
-//        }
-//    }
-
     public BlockPos calculateBlockForPlayer() {
         BlockPos finalPos = null;
         if (getFinalTarget() == null) return null;
@@ -435,20 +408,6 @@ public class AutoCrystal extends Module {
         }
         return possiblePlayers;
     }
-
-//    public Map<EntityPlayer, Integer> getExposedAmount() {
-//        Map<EntityPlayer, Integer> exposedAmount = new HashMap<>();
-//        Map<EntityPlayer, BlockPos> protectiveBlocks = new HashMap<>();
-//        for (EntityPlayer player : getPossibleTargets()) {
-//            BlockPos playerPos = player.getPosition();
-//            for (EnumFacing facing : EnumFacing.values()) {
-//                if (facing.equals(EnumFacing.UP)) continue;
-//                BlockPos neighbor = playerPos.offset(facing);
-//                if (BlockUtil.getBlockResistance(neighbor) != BlockUtil.BlockResistance.RESISTANT) continue;
-//                protectiveBlocks.put(player, neighbor);
-//            }
-//        }
-//    }
 
     public boolean areAllPlayersInHoles() {
         Set<EntityPlayer> playersInHoles = new HashSet<>();

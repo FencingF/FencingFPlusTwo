@@ -17,6 +17,7 @@ public class MixinMinecraft {
         FencingFPlus2.INSTANCE.configManager.save();
         //Covenant.INSTANCE.configManager.saveFriends();
         FencingFPlus2.INSTANCE.configManager.savePrefix();
+        //FencingFPlus2.INSTANCE.configManager.saveFriends();
         FakePlayer.INSTANCE.setToggled(false);
     }
 
@@ -25,6 +26,7 @@ public class MixinMinecraft {
         FencingFPlus2.INSTANCE.configManager.save();
         //Covenant.INSTANCE.configManager.saveFriends();
         FencingFPlus2.INSTANCE.configManager.savePrefix();
+        //FencingFPlus2.INSTANCE.configManager.saveFriends();
         FakePlayer.INSTANCE.setToggled(false);
     }
 }

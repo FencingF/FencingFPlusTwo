@@ -14,7 +14,7 @@ public class XCarry extends Module {
 
     @SubscribeEvent
     public void onPacket(PacketEvent.Send event) {
-        if (event.getPacket() instanceof CPacketCloseWindow) {
+        if (event.getPacket() instanceof CPacketCloseWindow && ((CPacketCloseWindow) event.getPacket()).windowId == 0) {
             if (((CPacketCloseWindow) event.getPacket()).windowId == mc.player.inventoryContainer.windowId) {
                 event.setCanceled(true);
             }

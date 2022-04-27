@@ -5,6 +5,7 @@
   "refmap": "mixins.fencingf.refmap.json",
   "minVersion": "0.7.4",
   "mixins": [
+    "block.MixinBlockWeb",
     "entity.MixinEntity",
     "entity.MixinEntityLivingBase",
     "entity.MixinEntityPlayerSP",
