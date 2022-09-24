@@ -5,6 +5,9 @@ import net.minecraftforge.fml.common.eventhandler.Event;
 
 import java.util.UUID;
 
+
+// ConnectionEvent is a class that extends Event and is used to help with some modules.
+
 public class ConnectionEvent extends Event {
     UUID uuid;
     EntityPlayer entity;

@@ -1,70 +1,16 @@
-package org.fenci.fencingfplus2.features.module.modules.combat;
-
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityEnderCrystal;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
-import net.minecraft.init.MobEffects;
-import net.minecraft.init.SoundEvents;
-import net.minecraft.item.ItemSword;
-import net.minecraft.network.play.client.*;
-import net.minecraft.network.play.server.SPacketSoundEffect;
-import net.minecraft.network.play.server.SPacketSpawnObject;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import org.fenci.fencingfplus2.events.network.PacketEvent;
-import org.fenci.fencingfplus2.events.player.UpdateWalkingPlayerEvent;
-import org.fenci.fencingfplus2.features.module.Category;
-import org.fenci.fencingfplus2.features.module.Module;
-import org.fenci.fencingfplus2.mixin.mixins.misc.ICPacketUseEntityMixin;
-import org.fenci.fencingfplus2.setting.Setting;
-import org.fenci.fencingfplus2.util.client.MathUtil;
-import org.fenci.fencingfplus2.util.client.Timer;
-import org.fenci.fencingfplus2.util.math.CrystalUtil;
-import org.fenci.fencingfplus2.util.player.InventoryUtil;
-import org.fenci.fencingfplus2.util.player.PlayerUtil;
-import org.fenci.fencingfplus2.util.render.RenderUtil;
-import org.fenci.fencingfplus2.util.world.HoleUtil;
-
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-
-import static org.fenci.fencingfplus2.util.render.RenderUtil.generateBB;
-
-public class AutoCrystal extends Module {
-
-    public static AutoCrystal INSTANCE;
-
-    public AutoCrystal() {
-        super("AutoCrystal", "Automatically places and breaks crystals.", Category.Combat);
-        INSTANCE = this;
-    }
-
-    //TODO: Multithreading, Motion-based/Ping based predictions
-
-    //placing
-    public static final Setting<Place> place = new Setting<>("Place", Place.Normal);
-    public static final Setting<Float> placeRange = new Setting<>("PlaceRange", 4f, 0, 10);
-    public static final Setting<Float> playerRange = new Setting<>("PlayerRange", 8f, 0, 30);
-    public static final Setting<Integer> playerOverrideHealth = new Setting<>("PlayerOverrideHealth", 4, 1, 36);
+package org.fenci.fencingfplus2.features.module.modules.combat;import net.minecraft.entity.Entity;import net.minecraft.entity.item.EntityEnderCrystal;import net.minecraft.entity.player.EntityPlayer;import net.minecraft.init.Items;import net.minecraft.init.MobEffects;import net.minecraft.init.SoundEvents;import net.minecraft.item.ItemSword;import net.minecraft.network.play.client.*;import net.minecraft.network.play.server.SPacketSoundEffect;import net.minecraft.network.play.server.SPacketSpawnObject;import net.minecraft.util.EnumFacing;import net.minecraft.util.EnumHand;import net.minecraft.util.SoundCategory;import net.minecraft.util.math.BlockPos;import net.minecraft.util.math.RayTraceResult;import net.minecraft.util.math.Vec3d;import net.minecraftforge.common.MinecraftForge;import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;import net.minecraftforge.fml.common.gameevent.TickEvent;import org.fenci.fencingfplus2.events.client.AutoCrystalEvent;import org.fenci.fencingfplus2.events.network.PacketEvent;import org.fenci.fencingfplus2.events.player.UpdateWalkingPlayerEvent;import org.fenci.fencingfplus2.features.module.Module;import org.fenci.fencingfplus2.mixin.mixins.misc.ICPacketUseEntityMixin;import org.fenci.fencingfplus2.setting.Setting;import org.fenci.fencingfplus2.util.client.MathUtil;import org.fenci.fencingfplus2.util.client.Timer;import org.fenci.fencingfplus2.util.math.CrystalUtil;import org.fenci.fencingfplus2.util.player.InventoryUtil;import org.fenci.fencingfplus2.util.player.PlayerUtil;import org.fenci.fencingfplus2.util.render.RenderUtil;import org.fenci.fencingfplus2.util.world.HoleUtil;import java.util.*;import java.util.concurrent.ConcurrentHashMap;import static org.fenci.fencingfplus2.util.render.RenderUtil.generateBB;public class AutoCrystal extends Module { /*placing*/ public static final Setting<Place> place = new Setting<>("Place", Place.Packet);public static final Setting<Float> placeRange = new Setting<>("PlaceRange", 4f, 0, 5); /*TODO: Multithreading, Motion-based/Ping based predictions*/public static final Setting<Float> playerRange = new Setting<>("PlayerRange", 8f, 0, 30);//    public static final Setting<Integer> playerOverrideHealth = new Setting<>("PlayerOverrideHealth", 4, 1, 36);
     //public static final Setting<Float> placeWallRange = new Setting<>("PlaceWallRange", 5f, 0, 6);
+/*    public static final Setting<Boolean> noBadPlace = new Setting<>("NoBadPlace", true);*/
     public static final Setting<Boolean> raytrace = new Setting<>("Raytrace", false);
     public static final Setting<Integer> minDamage = new Setting<>("MinDamage", 1, 0, 36);
     public static final Setting<Integer> maxLocalDamage = new Setting<>("MaxLocalDamage", 20, 0, 36);
     public static final Setting<Boolean> ignoreSelfDmg = new Setting<>("IgnoreSelfDmg", false);
     public static final Setting<Boolean> placeSwing = new Setting<>("PlaceSwing", true);
     public static final Setting<Float> placeDelay = new Setting<>("PlaceDelay", 0f, 0, 20);
-
-    //breaking
+    /*breaking*/
     public static final Setting<Break> breakCrystal = new Setting<>("Break", Break.All);
-    public static final Setting<Float> breakRange = new Setting<>("BreakRange", 5f, 0, 10);
-    public static final Setting<Float> breakWallRange = new Setting<>("BreakWallRange", 5f, 0, 6);
+    public static final Setting<Float> breakRange = new Setting<>("BreakRange", 4f, 0, 5);
+    public static final Setting<Float> breakWallRange = new Setting<>("BreakWallRange", 4f, 0, 5);
     public static final Setting<Boolean> packetExplode = new Setting<>("PacketExplode", true);
     public static final Setting<Boolean> fastCrystal = new Setting<>("NoAntiCheat", false);
     public static final Setting<Boolean> antiStuck = new Setting<>("AntiStuck", true);
@@ -73,56 +19,63 @@ public class AutoCrystal extends Module {
     public static final Setting<Integer> breakAttempts = new Setting<>("BreakAttempts", 1, 1, 5);
     public static final Setting<Float> breakSpeed = new Setting<>("BreakSpeed", 20f, 0, 20);
     public static final Setting<Weakness> antiWeakness = new Setting<>("AntiWeakness", Weakness.Normal);
-    //public static final Setting<Float> antiWeaknessSpeed = new Setting<>("AntiWeaknessSpeed", 0f, 0, 10);
-    public static final Setting<Boolean> threaded = new Setting<>("Threded", false);
-    //public static final Setting<Integer> threads = new Setting<>("Threads", 2, 1, 5);
-
-    //placing and breaking
+    /*public static final Setting<Float> antiWeaknessSpeed = new Setting<>("AntiWeaknessSpeed", 0f, 0, 10);*/
+    public static final Setting<Boolean> threaded = new Setting<>("Threaded", false);
+    /*placing and breaking*/
     public static final Setting<Boolean> noDesync = new Setting<>("NoDesync", true);
     public static final Setting<Boolean> swordPause = new Setting<>("SwordPause", false);
+    /*public static final Setting<Integer> threads = new Setting<>("Threads", 2, 1, 5);*/
     public static final Setting<Boolean> gapPause = new Setting<>("GapPause", false);
-    //public static final Setting<Boolean> armor = new Setting<>("Armor", true);
+    /*public static final Setting<Boolean> armor = new Setting<>("Armor", true);*/
     public static final Setting<Integer> popHealth = new Setting<>("PopHealth", 5, 1, 36);
     public static final Setting<Boolean> overrideIfPopable = new Setting<>("OverrideIfPopable", true);
     public static final Setting<Integer> minArmor = new Setting<>("MinArmorDamage", 20, 0, 100);
     public static final Setting<Boolean> antiSuicide = new Setting<>("AntiSuicide", true);
-    public static final Setting<Integer> antiSuicideFactor = new Setting<>("AntiSuicideFactor", 3, 0, 20);
+    public static final Setting<Integer> antiSuicideFactor = new Setting<>("AntiSuicideFactor", 4, 0, 20);
     public static final Setting<Boolean> predict = new Setting<>("Predict", true);
     public static final Setting<Boolean> rotate = new Setting<>("Rotate", true);
-    public static final Setting<Logic> logic = new Setting<>("Logic", Logic.PlaceBreak);
-
-    //misc
+    public static final Setting<Logic> logic = new Setting<>("Logic", Logic.BreakPlace);
+    /*misc*/
     public static final Setting<Switch> switchMode = new Setting<>("Switch", Switch.Normal);
     public static final Setting<Boolean> strongSwap = new Setting<>("StrongSwap", false);
     public static final Setting<Boolean> onePoint13 = new Setting<>("1.13+", false);
-
-    //rendering
+    /*rendering*/
     public static final Setting<Boolean> render = new Setting<>("Render", true);
     public static final Setting<ExtraRender> extraRender = new Setting<>("ExtraRender", ExtraRender.Damage);
+    public static final Setting<Boolean> smoothRender = new Setting<>("SmoothRender", true);
     public static final Setting<Integer> red = new Setting<>("Red", 57, 0, 255);
     public static final Setting<Integer> green = new Setting<>("Green", 236, 0, 255);
     public static final Setting<Integer> blue = new Setting<>("Blue", 255, 0, 255);
     public static final Setting<Integer> alpha = new Setting<>("Alpha", 50, 0, 255);
-
+    public static AutoCrystal INSTANCE;
+    private final ConcurrentHashMap<EntityEnderCrystal, Integer> attackedCrystals = new ConcurrentHashMap<>();
+    private final List<BlockPos> placedCrystals = new ArrayList<>();
+    private final List<Long> crystalsPerSecond = new ArrayList<>();
+    private final Timer clearTimer = new Timer();
+    private final Timer cpsTimer = new Timer();
+    public EntityPlayer target = null;
     boolean isInHole;
     boolean isRotating;
     private float pitch = 0.0f;
     private float yaw = 0.0f;
     private int hitTicks;
     private int placeTicks;
-    public EntityPlayer target = null;
-
+    /*private final Map<BlockPos, EntityPlayer> damagesForPlayer = new HashMap<>(); //entity is player we are checking blockpos is the pos with the max damage for that player*/
     private BlockPos renderPosition;
 
-    private final ConcurrentHashMap<EntityEnderCrystal, Integer> attackedCrystals = new ConcurrentHashMap<>();
-    private final List<BlockPos> placedCrystals = new ArrayList<>();
-    private final List<Long> crystalsPerSecond = new ArrayList<>();
-    //private final Map<BlockPos, EntityPlayer> damagesForPlayer = new HashMap<>(); //entity is player we are checking blockpos is the pos with the max damage for that player
+    private BlockPos oldRenderPos;
+    private BlockPos newRenderPos;
 
-    private final Timer clearTimer = new Timer();
-    private final Timer cpsTimer = new Timer();
+    int loop = 0;
+    Vec3d renderPos;
+    Vec3d renderPos2;
 
-    //Timer weaknessTimer = new Timer();
+    public AutoCrystal() {
+        super("AutoCrystal", "Automatically places and breaks crystals.", Category.Combat);
+        INSTANCE = this;
+    }
+
+    /*Timer weaknessTimer = new Timer();*/
 
     @Override
     public String getDisplayInfo() {
@@ -139,9 +92,14 @@ public class AutoCrystal extends Module {
     }
 
     @Override
-    public void onDisable() {
+    public void onDisable() { /*If this starts crashing its cause I set everything to null.*/
         mc.playerController.syncCurrentPlayItem();
         crystalsPerSecond.clear();
+        renderPos = null;
+        renderPos2 = null;
+        renderPosition = null;
+        oldRenderPos = null;
+        newRenderPos = null;
     }
 
     @SubscribeEvent
@@ -149,12 +107,13 @@ public class AutoCrystal extends Module {
         try {
             if (crystalsPerSecond.isEmpty()) return;
             crystalsPerSecond.removeIf(crystal -> cpsTimer.getTimePassed() > crystal + 1000);
-        } catch (ConcurrentModificationException ignored) {}
+        } catch (ConcurrentModificationException ignored) {
+        }
     }
 
     @Override
     public void onUpdate() {
-        if (clearTimer.hasReached(5L)){
+        if (clearTimer.hasReached(5L)) {
             attackedCrystals.clear();
             placedCrystals.clear();
             clearTimer.reset();
@@ -167,13 +126,15 @@ public class AutoCrystal extends Module {
             doAutoCrystal();
             hitTicks++;
             placeTicks++;
-        } catch (NullPointerException ignored) {}
+        } catch (NullPointerException ignored) {
+        }
     }
 
     public void doAutoCrystal() {
-        if (swordPause.getValue() && mc.player.getHeldItemMainhand().getItem() instanceof ItemSword || gapPause.getValue() && mc.player.getHeldItemMainhand().getItem().equals(Items.GOLDEN_APPLE)) return;
+        if (swordPause.getValue() && mc.player.getHeldItemMainhand().getItem() instanceof ItemSword || gapPause.getValue() && mc.player.getHeldItemMainhand().getItem().equals(Items.GOLDEN_APPLE))
+            return;
         target = getFinalTarget();
-        //this.getAllDamages();
+        /*this.getAllDamages();*/
         if (target != null) {
             if (threaded.getValue()) {
                 Threaded threaded = new Threaded();
@@ -189,7 +150,7 @@ public class AutoCrystal extends Module {
         }
     }
 
-    // calculateDamageForPlayer returns damage and then getAllDamages adds each of those damages + the player to a hasmap then we compare which player has the highest damage
+    /* calculateDamageForPlayer returns damage and then getAllDamages adds each of those damages + the player to a hasmap then we compare which player has the highest damage*/
 
     public void placeCrystal() {
         BlockPos targetPosition;
@@ -236,7 +197,7 @@ public class AutoCrystal extends Module {
                 mc.playerController.processRightClickBlock(mc.player, mc.world, targetPosition, facing, hitVec, hasSilentSwapped ? EnumHand.MAIN_HAND : getHand());
             }
             if (place.getValue().equals(Place.Vanilla)) {
-                mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(currentPos, currentFace, hasSilentSwapped ? EnumHand.MAIN_HAND : getHand(), f, f1, f2));
+                mc.player.connection.sendPacket(new CPacketPlayerTryUseItemOnBlock(currentPos, EnumFacing.UP, hasSilentSwapped ? EnumHand.MAIN_HAND : getHand(), f, f1, f2));
             }
             if (place.getValue().equals(Place.Packet)) {
                 CrystalUtil.placeCrystalOnBlock(targetPosition, hasSilentSwapped ? EnumHand.MAIN_HAND : getHand());
@@ -285,11 +246,13 @@ public class AutoCrystal extends Module {
             double selfDamage = ignoreSelfDmg.getValue() ? 0 : CrystalUtil.calculateDamage(crystal, mc.player);
 
             if (!breakCrystal.getValue().equals(Break.All)) {
-                if (targetDamage < minArmor.getValue() && targetDamage < target.getHealth() + target.getAbsorptionAmount()) continue;
+                if (targetDamage < minArmor.getValue() && targetDamage < target.getHealth() + target.getAbsorptionAmount())
+                    continue;
 
                 if (selfDamage > maxLocalDamage.getValue()) continue;
 
-                if ((mc.player.getHealth() + mc.player.getAbsorptionAmount()) - antiSuicideFactor.getValue() - selfDamage <= 0 && antiSuicide.getValue()) continue;
+                if ((mc.player.getHealth() + mc.player.getAbsorptionAmount()) - antiSuicideFactor.getValue() - selfDamage <= 0 && antiSuicide.getValue())
+                    continue;
             }
 
             if (breakCrystal.getValue().equals(Break.All)) {
@@ -352,16 +315,19 @@ public class AutoCrystal extends Module {
             attackedCrystals.put(crystal, 1);
         }
     }
+
     public BlockPos calculateBlockForPlayer() {
         BlockPos finalPos = null;
         if (getFinalTarget() == null) return null;
         for (BlockPos pos : CrystalUtil.possiblePlacePositions(placeRange.getValue(), onePoint13.getValue(), true)) {
 
-            if (CrystalUtil.calculateDamage(pos, mc.player) > maxLocalDamage.getValue() && !ignoreSelfDmg.getValue()) continue;
+            if (CrystalUtil.calculateDamage(pos, mc.player) > maxLocalDamage.getValue() && !ignoreSelfDmg.getValue())
+                continue;
 
             if (!CrystalUtil.canSeePos(pos) && raytrace.getValue()) continue;
 
-            if (antiSuicide.getValue() && CrystalUtil.calculateDamage(pos, mc.player) > (mc.player.getHealth() + mc.player.getAbsorptionAmount()) - antiSuicideFactor.getValue() && !ignoreSelfDmg.getDefaultValue()) continue;
+            if (antiSuicide.getValue() && CrystalUtil.calculateDamage(pos, mc.player) > (mc.player.getHealth() + mc.player.getAbsorptionAmount()) - antiSuicideFactor.getValue() && !ignoreSelfDmg.getDefaultValue())
+                continue;
 
             if (CrystalUtil.calculateDamage(pos, getFinalTarget()) < getMinDamage(getFinalTarget())) continue;
 
@@ -372,6 +338,8 @@ public class AutoCrystal extends Module {
             }
             finalPos = pos;
         }
+        AutoCrystalEvent autoCrystalEvent = new AutoCrystalEvent(finalPos, renderPosition);
+        MinecraftForge.EVENT_BUS.post(autoCrystalEvent);
         return finalPos;
     }
 
@@ -383,17 +351,18 @@ public class AutoCrystal extends Module {
 //            if (finalPlayer != null && PlayerUtil.getPlayerHealth(player) <= playerOverrideHealth.getValue()) {
 //                if (player.getHealth() > finalPlayer.getHealth()) continue;
 //            } else if (finalPlayer != null && PlayerUtil.getPlayerHealth(player) >= playerOverrideHealth.getValue()) {
-//            }
+/*            }*/
             if (finalPlayer != null) {
-                if (player.getDistance(player) > player.getDistanceSq(finalPlayer)) continue;
+                if (player.getDistance(player) > player.getDistance(finalPlayer)) continue;
             }
 
             finalPlayer = player;
         }
         return finalPlayer;
     }
-//
-    public Set<EntityPlayer> getPossibleTargets() { //TODO: Get most exposed player
+
+    /**/
+    public Set<EntityPlayer> getPossibleTargets() { /*TODO: Get most exposed player*/
         Set<EntityPlayer> possiblePlayers = new HashSet<>();
         for (EntityPlayer player : mc.world.playerEntities) {
             if (player.getDistanceSq(mc.player) > MathUtil.square(playerRange.getValue())) continue;
@@ -402,7 +371,7 @@ public class AutoCrystal extends Module {
 
             if (player.getHealth() <= 0) continue;
 
-            if (player.equals(mc.player)) continue;
+            if (player.getUniqueID().equals(mc.player.getUniqueID())) continue;
 
             possiblePlayers.add(player);
         }
@@ -419,7 +388,7 @@ public class AutoCrystal extends Module {
         return isInHole;
     }
 
-    public int getMinDamage(EntityPlayer player) { //Apparently this crashes sometimes I don't know why though
+    public int getMinDamage(EntityPlayer player) { /*Apparently this crashes sometimes I don't know why though*/
         int minumumDamage;
         if (isPlayerPopable(player) && overrideIfPopable.getValue()) {
             minumumDamage = 1;
@@ -436,7 +405,7 @@ public class AutoCrystal extends Module {
     public EnumHand getHand() {
         if (switchMode.getValue().equals(Switch.Silent)) {
             return EnumHand.MAIN_HAND;
-        } else if (mc.player.getHeldItemOffhand().getItem().equals(Items.END_CRYSTAL)){
+        } else if (mc.player.getHeldItemOffhand().getItem().equals(Items.END_CRYSTAL)) {
             return EnumHand.OFF_HAND;
         } else {
             return EnumHand.MAIN_HAND;
@@ -444,20 +413,29 @@ public class AutoCrystal extends Module {
     }
 
     @SubscribeEvent
+    public void onCrystal(AutoCrystalEvent event) {
+        if (!event.getNewPos().equals(event.getOldPos())) {
+            newRenderPos = event.getNewPos();
+            oldRenderPos = event.getOldPos();
+            loop = 0;
+        }
+    }
+
+    @SubscribeEvent
     public void onPacket(PacketEvent.Receive event) {
         if (!fullNullCheck()) return;
 
-        if (event.getPacket() instanceof SPacketSpawnObject && predict.getValue()){
+        if (event.getPacket() instanceof SPacketSpawnObject && predict.getValue()) {
             final SPacketSpawnObject packet = event.getPacket();
             final BlockPos position = new BlockPos(packet.getX(), packet.getY() - 1, packet.getZ());
-            if (packet.getType() == 51 && placedCrystals.contains(position)){
+            if (packet.getType() == 51 && placedCrystals.contains(position)) {
                 CPacketUseEntity packetUseEntity = new CPacketUseEntity();
                 ((ICPacketUseEntityMixin) packetUseEntity).setEntityIdAccessor(packet.getEntityID());
                 ((ICPacketUseEntityMixin) packetUseEntity).setActionAccessor(CPacketUseEntity.Action.ATTACK);
 
                 mc.player.connection.sendPacket(packetUseEntity);
-                if (!breakSwing.getValue().equals(BreakSwing.Off)){
-                    if (breakSwing.getValue().equals(BreakSwing.Silent)){
+                if (!breakSwing.getValue().equals(BreakSwing.Off)) {
+                    if (breakSwing.getValue().equals(BreakSwing.Silent)) {
                         mc.player.connection.sendPacket(new CPacketAnimation(getHand()));
                     } else {
                         mc.player.swingArm(getHand());
@@ -483,7 +461,22 @@ public class AutoCrystal extends Module {
     @Override
     public void onRender3D() {
         if (fullNullCheck() && renderPosition != null && render.getValue()) {
-            RenderUtil.drawBox(generateBB(renderPosition.getX(), renderPosition.getY(), renderPosition.getZ()), red.getValue() / 255f, green.getValue() / 255f, blue.getValue() / 255f, alpha.getValue() / 255f);
+            if (!smoothRender.getValue()) {
+                RenderUtil.drawBox(generateBB(renderPosition.getX(), renderPosition.getY(), renderPosition.getZ()), red.getValue() / 255f, green.getValue() / 255f, blue.getValue() / 255f, alpha.getValue() / 255f);
+            } else if (oldRenderPos != null && newRenderPos != null) {
+                if (loop == 0) {
+                    renderPos = linearInterpolation(oldRenderPos, newRenderPos, 0.10);
+                    RenderUtil.drawBox(generateBB(renderPos.x, renderPos.y, renderPos.z), red.getValue() / 255f, green.getValue() / 255f, blue.getValue() / 255f, alpha.getValue() / 255f);
+                } else if (loop == 1 || loop % 2 == 0) {
+                    renderPos2 = linearInterpolation(renderPos, newRenderPos, 0.10);
+                    RenderUtil.drawBox(generateBB(renderPos2.x, renderPos2.y, renderPos2.z), red.getValue() / 255f, green.getValue() / 255f, blue.getValue() / 255f, alpha.getValue() / 255f);
+                } else {
+                    renderPos = linearInterpolation(renderPos2, newRenderPos, 0.10);
+                    RenderUtil.drawBox(generateBB(renderPos.x, renderPos.y, renderPos.z), red.getValue() / 255f, green.getValue() / 255f, blue.getValue() / 255f, alpha.getValue() / 255f);
+                }
+                loop++;
+            }
+            if (smoothRender.getValue()) return;
             if (extraRender.getValue().equals(ExtraRender.CPS)) {
                 RenderUtil.drawText(renderPosition, String.valueOf(crystalsPerSecond.size()));
             } else if (extraRender.getValue().equals(ExtraRender.Damage) && target != null) {
@@ -493,7 +486,14 @@ public class AutoCrystal extends Module {
         }
     }
 
-    //rotations
+    public Vec3d linearInterpolation(final Vec3d currentValue, final BlockPos goalValue, final double speed) {
+        return new Vec3d (currentValue.x + speed * (goalValue.x - currentValue.x), currentValue.y + speed * (goalValue.y - currentValue.y), currentValue.z + speed * (goalValue.z - currentValue.z));
+    }
+    public Vec3d linearInterpolation(final BlockPos currentValue, final BlockPos goalValue, final double speed) {
+        return new Vec3d (currentValue.x + speed * (goalValue.x - currentValue.x), currentValue.y + speed * (goalValue.y - currentValue.y), currentValue.z + speed * (goalValue.z - currentValue.z));
+    }
+
+    /*rotations*/
     @SubscribeEvent
     public void onPacketSend(PacketEvent.Send event) {
         if (rotate.getValue() && event.getPacket() instanceof CPacketPlayer && isRotating) {
@@ -522,10 +522,10 @@ public class AutoCrystal extends Module {
         }
     }
 
-    //enums for the enum settings
+    /*enums for the enum settings*/
 
     public enum BreakSwing {
-       Normal, Silent, Off
+        Normal, Silent, Off
     }
 
     public enum Switch {
@@ -533,7 +533,7 @@ public class AutoCrystal extends Module {
     }
 
     public enum Break {
-        All, OnlyOwn, Off //redo smart mode later
+        All, OnlyOwn, Off /*redo smart mode later*/
     }
 
     public enum Logic {
@@ -556,7 +556,7 @@ public class AutoCrystal extends Module {
 
         @Override
         public void run() {
-            //AutoCrystal.INSTANCE.finalPos = AutoCrystal.INSTANCE.getPlacePos();
+            /*AutoCrystal.INSTANCE.finalPos = AutoCrystal.INSTANCE.getPlacePos();*/
         }
     }
 }

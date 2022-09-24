@@ -12,20 +12,22 @@ public class KitCommand extends Command {
 
     @Override
     public void runCommand(List<String> args) {
-        if (args.size() >= 2) {
-            if (args.get(0).equalsIgnoreCase("all")) {
-                if (getFencing().kitManager.getAnyKit().size() == 1) getFencing().kitManager.removeAnyKit();
-                getFencing().kitManager.addAnyKit(args.get(1));
-                ClientMessage.sendMessage("Kit set to: " + getFencing().kitManager.getAnyManagedKitName() + ", for server: " + args.get(0) + ".");
-            } else if (!args.get(0).equalsIgnoreCase("all")) {
-                if (!getFencing().kitManager.serverIpKits.containsKey(args.get(1))) {
-                    getFencing().kitManager.removeIpKit(args.get(0));
+        try {
+            if (args.size() >= 2) {
+                if (args.get(0).equalsIgnoreCase("all")) {
+                    if (getFencing().kitManager.getAnyKit().size() == 1) getFencing().kitManager.removeAnyKit();
+                    getFencing().kitManager.addAnyKit(args.get(1));
+                    ClientMessage.sendMessage("Kit set to: " + getFencing().kitManager.getAnyManagedKitName() + ", for server: " + args.get(0) + ".");
+                } else {
+                    if (!getFencing().kitManager.serverIpKits.containsKey(args.get(1))) {
+                        getFencing().kitManager.removeIpKit(args.get(0));
+                    }
+                    getFencing().kitManager.addIpKit(args.get(0), args.get(1));
+                    ClientMessage.sendMessage("Kit set to: " + getFencing().kitManager.getKitFromIp(args.get(0)) + ", for server: " + args.get(0) + ".");
                 }
-                getFencing().kitManager.addIpKit(args.get(0), args.get(1));
-                ClientMessage.sendMessage("Kit set to: " + getFencing().kitManager.getKitFromIp(args.get(0)) + ", for server: " + args.get(0) + ".");
+            } else {
+                ClientMessage.sendErrorMessage(getSyntax());
             }
-        } else {
-            ClientMessage.sendErrorMessage(getSyntax());
-        }
+        } catch (Exception ignored) {}
     }
 }

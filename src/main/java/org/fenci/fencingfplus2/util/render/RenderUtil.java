@@ -3,9 +3,11 @@ package org.fenci.fencingfplus2.util.render;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import org.fenci.fencingfplus2.util.Globals;
 import org.lwjgl.opengl.GL11;
 
@@ -41,6 +43,52 @@ public class RenderUtil implements Globals {
         GlStateManager.shadeModel(GL11.GL_FLAT);
         GlStateManager.enableTexture2D();
         GlStateManager.enableDepth();
+    }
+
+
+    public static void drawBox(float x, float y, float z, int r, int g, int b, int a, int sides) {
+        final Tessellator tessellator = Tessellator.getInstance();
+        final BufferBuilder bufferbuilder = tessellator.getBuffer();
+        drawBox(bufferbuilder, x, y, z, 1.0f, 1.0f, 1.0f, r, g, b, a, sides);
+    }
+
+    public static void drawBox(BufferBuilder buffer, float x, float y, float z, float w, float h, float d, int r, int g, int b, int a, int sides) {
+        if ((sides & 1) != 0) {
+            buffer.pos(x + w, y, z).color(r, g, b, a).endVertex();
+            buffer.pos(x + w, y, z + d).color(r, g, b, a).endVertex();
+            buffer.pos(x, y, z + d).color(r, g, b, a).endVertex();
+            buffer.pos(x, y, z).color(r, g, b, a).endVertex();
+        }
+        if ((sides & 2) != 0) {
+            buffer.pos(x + w, y + h, z).color(r, g, b, a).endVertex();
+            buffer.pos(x, y + h, z).color(r, g, b, a).endVertex();
+            buffer.pos(x, y + h, z + d).color(r, g, b, a).endVertex();
+            buffer.pos(x + w, y + h, z + d).color(r, g, b, a).endVertex();
+        }
+        if ((sides & 4) != 0) {
+            buffer.pos(x + w, y, z).color(r, g, b, a).endVertex();
+            buffer.pos(x, y, z).color(r, g, b, a).endVertex();
+            buffer.pos(x, y + h, z).color(r, g, b, a).endVertex();
+            buffer.pos(x + w, y + h, z).color(r, g, b, a).endVertex();
+        }
+        if ((sides & 8) != 0) {
+            buffer.pos(x, y, z + d).color(r, g, b, a).endVertex();
+            buffer.pos(x + w, y, z + d).color(r, g, b, a).endVertex();
+            buffer.pos(x + w, y + h, z + d).color(r, g, b, a).endVertex();
+            buffer.pos(x, y + h, z + d).color(r, g, b, a).endVertex();
+        }
+        if ((sides & 0x10) != 0) {
+            buffer.pos(x, y, z).color(r, g, b, a).endVertex();
+            buffer.pos(x, y, z + d).color(r, g, b, a).endVertex();
+            buffer.pos(x, y + h, z + d).color(r, g, b, a).endVertex();
+            buffer.pos(x, y + h, z).color(r, g, b, a).endVertex();
+        }
+        if ((sides & 0x20) != 0) {
+            buffer.pos(x + w, y, z + d).color(r, g, b, a).endVertex();
+            buffer.pos(x + w, y, z).color(r, g, b, a).endVertex();
+            buffer.pos(x + w, y + h, z).color(r, g, b, a).endVertex();
+            buffer.pos(x + w, y + h, z + d).color(r, g, b, a).endVertex();
+        }
     }
 
     public static void drawBorderedRect(final double x, final double y, final double x1, final double y1, final double width, final int internalColor, final int borderColor) {
@@ -151,11 +199,11 @@ public class RenderUtil implements Globals {
     }
 
     public static float drawStringWithShadow(final String text, final int x, final int y, final int color) {
-        return (float)mc.fontRenderer.drawStringWithShadow(text, (float)x, (float)y, color);
+        return (float) mc.fontRenderer.drawStringWithShadow(text, (float) x, (float) y, color);
     }
 
     public static float drawString(final String text, final int x, final int y, final int color) {
-        return (float)mc.fontRenderer.drawString(text, x, y, color);
+        return (float) mc.fontRenderer.drawString(text, x, y, color);
     }
 
     public static int getStringWidth(final String str) {
@@ -232,6 +280,21 @@ public class RenderUtil implements Globals {
         glRelease();
     }
 
+    public static void drawEntityPrediction(BufferBuilder buffer, Entity entity, Vec3d motion, Float partialTicks) {
+        double x = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * partialTicks;
+        double y = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * partialTicks;
+        double z = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * partialTicks;
+
+        double endX = x + motion.x;
+        double endY = y + motion.y;
+        double endZ = z + motion.z;
+
+        buffer.pos(x, y, z).endVertex();
+        buffer.pos(endX, endY, endZ).endVertex();
+        buffer.pos(endX, endY, endZ).endVertex();
+        buffer.pos(endX, endY + entity.getEyeHeight(), endZ).endVertex();
+    }
+
     public static void glRelease() {
         GlStateManager.enableCull();
         GlStateManager.depthMask(true);
@@ -295,17 +358,16 @@ public class RenderUtil implements Globals {
 //    }
 
     public static AxisAlignedBB generateBB(double x, double y, double z) {
-        BlockPos blockPos = new BlockPos(x, y, z);
-        final AxisAlignedBB bb = new AxisAlignedBB
+        Vec3d blockPos = new Vec3d(x, y, z);
+        return new AxisAlignedBB
                 (
-                        blockPos.getX() - Minecraft.getMinecraft().getRenderManager().viewerPosX,
-                        blockPos.getY() - Minecraft.getMinecraft().getRenderManager().viewerPosY,
-                        blockPos.getZ() - Minecraft.getMinecraft().getRenderManager().viewerPosZ,
-                        blockPos.getX() + 1 - Minecraft.getMinecraft().getRenderManager().viewerPosX,
-                        blockPos.getY() + (1) - Minecraft.getMinecraft().getRenderManager().viewerPosY,
-                        blockPos.getZ() + 1 - Minecraft.getMinecraft().getRenderManager().viewerPosZ
+                        blockPos.x - Minecraft.getMinecraft().getRenderManager().viewerPosX,
+                        blockPos.y - Minecraft.getMinecraft().getRenderManager().viewerPosY,
+                        blockPos.z - Minecraft.getMinecraft().getRenderManager().viewerPosZ,
+                        blockPos.x + 1 - Minecraft.getMinecraft().getRenderManager().viewerPosX,
+                        blockPos.y + (1) - Minecraft.getMinecraft().getRenderManager().viewerPosY,
+                        blockPos.z + 1 - Minecraft.getMinecraft().getRenderManager().viewerPosZ
                 );
-        return bb;
     }
 
     public static class TessellatorUtil extends Tessellator {
@@ -342,5 +404,4 @@ public class RenderUtil implements Globals {
             GlStateManager.enableDepth();
         }
     }
-
 }

@@ -10,7 +10,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.fenci.fencingfplus2.events.player.ClickBlockEvent;
-import org.fenci.fencingfplus2.features.module.Category;
 import org.fenci.fencingfplus2.features.module.Module;
 import org.fenci.fencingfplus2.setting.Setting;
 import org.fenci.fencingfplus2.util.client.Timer;
@@ -21,15 +20,10 @@ import org.fenci.fencingfplus2.util.world.BlockUtil;
 import java.awt.*;
 
 public class PacketMine extends Module {
-    public PacketMine() {
-        super("PacketMine", "Mines stuff with packets", Category.Combat);
-    }
-
     public static final Setting<Boolean> render = new Setting<>("Render", true);
     public static final Setting<Boolean> waitForNoInteract = new Setting<>("AntiInteract", false);
     public static final Setting<MineMode> mineModeSetting = new Setting<>("Mode", MineMode.Packet);
     public static final Setting<autoSwitch> autoSwitchSetting = new Setting<>("Switch", autoSwitch.Normal);
-
     BlockPos blockToMine;
     EnumFacing eventFacing;
     Timer timer = new Timer();
@@ -38,6 +32,13 @@ public class PacketMine extends Module {
     boolean sentFirstPacket;
     boolean sentLastPacket;
     boolean stopPacketSpamming;
+
+    public static PacketMine INSTANCE;
+
+    public PacketMine() {
+        super("PacketMine", "Mines stuff with packets", Category.Combat);
+        INSTANCE = this;
+    }
 
     @Override
     public void onEnable() {
@@ -121,7 +122,8 @@ public class PacketMine extends Module {
     @SubscribeEvent
     public void onRender3d(RenderWorldLastEvent event) {
         if (AutoCity.INSTANCE.isOn() || blockToMine == null || !fullNullCheck()) return;
-        if (render.getValue()) RenderUtil.drawBox(RenderUtil.generateBB(blockToMine.getX(), blockToMine.getY(), blockToMine.getZ()), getRenderColor().getAlpha() / 255f, getRenderColor().getGreen() / 255f, getRenderColor().getBlue() / 255f, getRenderColor().getAlpha() / 255f);
+        if (render.getValue())
+            RenderUtil.drawBox(RenderUtil.generateBB(blockToMine.getX(), blockToMine.getY(), blockToMine.getZ()), getRenderColor().getAlpha() / 255f, getRenderColor().getGreen() / 255f, getRenderColor().getBlue() / 255f, getRenderColor().getAlpha() / 255f);
     }
 
 

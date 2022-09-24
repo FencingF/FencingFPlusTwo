@@ -7,9 +7,8 @@ import net.minecraftforge.fml.common.eventhandler.Event;
 @Cancelable
 public class MoveEvent extends Event {
     private final MoverType moverType;
-    private double x, y, z;
-
     private final boolean stillMove = true;
+    private double x, y, z;
 
     public MoveEvent(MoverType moverType, double x, double y, double z) {
         this.moverType = moverType;

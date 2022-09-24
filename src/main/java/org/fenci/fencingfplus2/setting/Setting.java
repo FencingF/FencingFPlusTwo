@@ -11,8 +11,8 @@ public class Setting<T> {
     private final T defaultValue;
     private final Supplier<Boolean> visibility;
     private final Number min;
-    private T value;
     private final Number max;
+    private T value;
 
     public Setting(String name, T value) {
         this(name, value, null, null, null);

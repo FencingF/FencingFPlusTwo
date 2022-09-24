@@ -17,14 +17,17 @@ public class CommandManager {
     public CommandManager() {
         commands.add(new BindCommand());
         commands.add(new DefaultCommand());
+        commands.add(new DiscordCommand());
+        commands.add(new CalcCommand());
         commands.add(new FriendCommand());
         commands.add(new HelpCommand());
-        //commands.add(new KitCommand());
-        //commands.add(new LoginCommand());
-        //commands.add(new NickCommand());
+        commands.add(new InfoCommand());
+        commands.add(new KitCommand());
+        commands.add(new NickCommand());
         commands.add(new PrefixCommand());
         commands.add(new ScanCommand());
-        //commands.add(new SetCommand());
+        commands.add(new SetCommand());
+        commands.add(new StashCommand());
         commands.add(new ToggleCommand());
     }
 

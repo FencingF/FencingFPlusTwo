@@ -6,12 +6,12 @@ import net.minecraftforge.fml.common.eventhandler.Event;
 
 @Cancelable
 public class PushEvent extends Event {
-    int type;
     public Entity entity;
     public double x;
     public double y;
     public double z;
     public boolean airbone;
+    int type;
 
     /*
      * Stage 0 = Blocks

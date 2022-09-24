@@ -10,12 +10,16 @@ public class NickCommand extends Command {
         super("nick", "Changes your name client side", "nick [newname]");
     }
 
+    public static String newName = null;
+
     @Override
     public void runCommand(List<String> args) {
         if (args.size() >= 1) {
             try {
-                mc.player.setCustomNameTag(args.get(0));
-            } catch (Exception ignored) {}
+                newName = args.get(0);
+                ClientMessage.sendMessage("Set username to " + newName);
+            } catch (Exception ignored) {
+            }
         } else {
             ClientMessage.sendMessage(getSyntax());
         }

@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-@Mixin(value={Entity.class})
+@Mixin(value = {Entity.class})
 public abstract class MixinEntity {
     @Shadow
     public double posX;
@@ -23,18 +23,18 @@ public abstract class MixinEntity {
     public float rotationPitch;
     @Shadow
     public World world;
+    @Shadow
+    public boolean inPortal;
 
     @Shadow
     public abstract int getMaxInPortalTime();
 
-    @Shadow public boolean inPortal;
-
-    @Redirect(method={"onEntityUpdate"}, at=@At(value="INVOKE", target="Lnet/minecraft/entity/Entity;getMaxInPortalTime()I"))
+    @Redirect(method = {"onEntityUpdate"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;getMaxInPortalTime()I"))
     private int getMaxInPortalTimeHook(Entity entity) {
         return this.getMaxInPortalTime();
     }
 
-    @Redirect(method={"applyEntityCollision"}, at=@At(value="INVOKE", target="Lnet/minecraft/entity/Entity;addVelocity(DDD)V"))
+    @Redirect(method = {"applyEntityCollision"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;addVelocity(DDD)V"))
     public void addVelocityHook(Entity entity, double x, double y, double z) {
         PushEvent event = new PushEvent(entity, x, y, z, true, 1);
         MinecraftForge.EVENT_BUS.post(event);

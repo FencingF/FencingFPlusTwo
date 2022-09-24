@@ -25,14 +25,37 @@ public class Tracker {
     private long previous_millis = 0;
     private boolean is_lost = false;
 
-    public String getName() { return this.name; }
-    public int getX() { return this.CUR_POS.getX(); }
-    public int getZ() { return this.CUR_POS.getZ(); }
-    public double getSpeed() { return this.speed; }
+    public Tracker(TrackerManager pointer, String new_name, int X, int Z) {
+        this.manager_pointer = pointer;
+        this.name = new_name;
+        this.sent_requests = new ArrayList<>(4);
+        this.PREV_POS = new BlockPos(X, 0, Z);
+        this.CUR_POS = new BlockPos(X, 0, Z);
+
+//        System.out.println("Tracker " + new_name + " instantiated.");
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public int getX() {
+        return this.CUR_POS.getX();
+    }
+
+    public int getZ() {
+        return this.CUR_POS.getZ();
+    }
 //    public double getAngle() { return this.angle; }
 
+    public double getSpeed() {
+        return this.speed;
+    }
+
     // Returns true if the last call to averagePositionAndUpdateSpeed() set the lost flag.
-    public boolean isLost() { return this.is_lost; }
+    public boolean isLost() {
+        return this.is_lost;
+    }
 
     // Tell caller whether or not all requests have been received.
     public boolean receivedAllRequests() {
@@ -58,10 +81,10 @@ public class Tracker {
         // For every request, average coordinate values out with the current position.
         // Assume the Tracker is lost until proven otherwise.
         this.is_lost = true;
-        for (TrackerRequest req : sent_requests){
-            if (req.getResult() == 1){
-                x_val = (int) ( (x_val + req.getPosition().getX()) / 2.0 );
-                z_val = (int) ( (z_val + req.getPosition().getZ()) / 2.0 );
+        for (TrackerRequest req : sent_requests) {
+            if (req.getResult() == 1) {
+                x_val = (int) ((x_val + req.getPosition().getX()) / 2.0);
+                z_val = (int) ((z_val + req.getPosition().getZ()) / 2.0);
                 this.is_lost = false;
             }
         }
@@ -70,7 +93,7 @@ public class Tracker {
         // Measure the user's speed after their position has been updated.
         double change_x = CUR_POS.getX() - PREV_POS.getX();
         double change_z = CUR_POS.getZ() - PREV_POS.getZ();
-        speed = Math.sqrt( (change_x * change_x) + (change_z * change_z) ) / (frequency_millis / 1000.0);
+        speed = Math.sqrt((change_x * change_x) + (change_z * change_z)) / (frequency_millis / 1000.0);
         // angle =
         // Adjust the Tracker's position.
         PREV_POS = new BlockPos(CUR_POS.getX(), 0, CUR_POS.getZ());
@@ -109,23 +132,13 @@ public class Tracker {
         // Send 4 requests to the TrackerManager, it handles responses.
         int x_val = CUR_POS.getX();
         int z_val = CUR_POS.getZ();
-        sent_requests.add(new TrackerRequest(new BlockPos(x_val - 144, 0, z_val - 144),0));
-        sent_requests.add(new TrackerRequest(new BlockPos(x_val + 144, 0, z_val + 144),0));
-        sent_requests.add(new TrackerRequest(new BlockPos(x_val + 144, 0, z_val - 144),0));
-        sent_requests.add(new TrackerRequest(new BlockPos(x_val - 144, 0, z_val + 144),0));
+        sent_requests.add(new TrackerRequest(new BlockPos(x_val - 144, 0, z_val - 144), 0));
+        sent_requests.add(new TrackerRequest(new BlockPos(x_val + 144, 0, z_val + 144), 0));
+        sent_requests.add(new TrackerRequest(new BlockPos(x_val + 144, 0, z_val - 144), 0));
+        sent_requests.add(new TrackerRequest(new BlockPos(x_val - 144, 0, z_val + 144), 0));
         for (TrackerRequest req : sent_requests)
             manager_pointer.addOutgoingPacket(req);
 
 //        System.out.println("Call to update() succeeded.");
-    }
-
-    public Tracker(TrackerManager pointer, String new_name, int X, int Z) {
-        this.manager_pointer = pointer;
-        this.name = new_name;
-        this.sent_requests = new ArrayList <>(4);
-        this.PREV_POS = new BlockPos(X, 0, Z);
-        this.CUR_POS = new BlockPos(X, 0, Z);
-
-//        System.out.println("Tracker " + new_name + " instantiated.");
     }
 }

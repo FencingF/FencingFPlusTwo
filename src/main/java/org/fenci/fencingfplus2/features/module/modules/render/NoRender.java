@@ -7,18 +7,10 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.fenci.fencingfplus2.events.network.PacketEvent;
 import org.fenci.fencingfplus2.events.render.BossBarEvent;
 import org.fenci.fencingfplus2.events.render.RenderArmorEvent;
-import org.fenci.fencingfplus2.features.module.Category;
 import org.fenci.fencingfplus2.features.module.Module;
 import org.fenci.fencingfplus2.setting.Setting;
 
 public class NoRender extends Module {
-
-    public static NoRender INSTANCE;
-
-    public NoRender() {
-        super("NoRender", "Allows you to not render things", Category.Render);
-        INSTANCE = this;
-    }
 
     public static final Setting<Boolean> nausea = new Setting<>("Nausea", true);
     public static final Setting<Boolean> blindness = new Setting<>("Blindness", true);
@@ -28,9 +20,17 @@ public class NoRender extends Module {
     public static final Setting<Boolean> skylight = new Setting<>("Skylight", false);
     public static final Setting<Boolean> bossBar = new Setting<>("BossBar", false);
     public static final Setting<Boolean> armor = new Setting<>("Armor", false);
-//    public static final Setting<Boolean> enchantGlint = new Setting<>("EnchantGlint", false);
-//    public static final Setting<Boolean> lava = new Setting<>("Lava", false);
+    public static final Setting<Boolean> enchantGlint = new Setting<>("EnchantGlint", false);
+    //    public static final Setting<Boolean> lava = new Setting<>("Lava", false);
     public static final Setting<Boolean> fire = new Setting<>("Fire", true);
+    public static final Setting<Boolean> dynamicFOV = new Setting<>("DynamicFOV", false);
+
+    public static NoRender INSTANCE;
+
+    public NoRender() {
+        super("NoRender", "Allows you to not render things", Category.Render);
+        INSTANCE = this;
+    }
 
     @SubscribeEvent
     public void renderBlockEvent(RenderBlockOverlayEvent event) {

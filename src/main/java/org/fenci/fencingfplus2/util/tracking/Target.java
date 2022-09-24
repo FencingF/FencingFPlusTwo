@@ -4,6 +4,7 @@ import net.minecraft.util.math.BlockPos;
 
 public class Target {
 
-    public Target(BlockPos pos, int targetInstanceId) {}
+    public Target(BlockPos pos, int targetInstanceId) {
+    }
 
 }

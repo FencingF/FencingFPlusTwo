@@ -1,15 +1,15 @@
 package org.fenci.fencingfplus2.features.module.modules.misc;
 
-import org.fenci.fencingfplus2.features.module.Category;
+
 import org.fenci.fencingfplus2.features.module.Module;
 import org.fenci.fencingfplus2.setting.Setting;
 
 public class Timer extends Module {
+    public static final Setting<Float> tickRate = new Setting<>("TickRate", 1.0f, 0.1, 50);
+
     public Timer() {
         super("Timer", "Changes tick rate client side", Category.Misc);
     }
-
-    public static final Setting<Float> tickRate = new Setting<>("TickRate", 1.0f, 0, 50);
 
     @Override
     public String getDisplayInfo() {

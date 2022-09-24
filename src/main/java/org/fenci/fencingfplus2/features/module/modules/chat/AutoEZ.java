@@ -3,19 +3,13 @@ package org.fenci.fencingfplus2.features.module.modules.chat;
 import net.minecraft.network.play.client.CPacketChatMessage;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.fenci.fencingfplus2.events.player.DeathEvent;
-import org.fenci.fencingfplus2.features.module.Category;
 import org.fenci.fencingfplus2.features.module.Module;
 import org.fenci.fencingfplus2.setting.Setting;
 
 import java.util.Random;
 
 public class AutoEZ extends Module {
-    public AutoEZ() {
-        super("AutoEZ", "Automatically says ez when you kill someone", Category.Chat);
-    }
-
     public static final Setting<Boolean> greenText = new Setting<>("GreenText", false);
-
     String[] ezMessages = {
             "Hahaha get recked kid, FencingF Plus 2 On Tope!",
             "<player> LOL U JUST LMFAO UR PROB A FUTURE USER LMFAOOOOOOO",
@@ -45,18 +39,32 @@ public class AutoEZ extends Module {
             "Clown down, just quit already because you have died to FENCINGF+2",
             "Impact+ on top",
             "How do i cpvp can someone teach me im new",
-            "bro imagine being you, what a loser.\n",
             "future beta plus owns you",
             "<player> tried to start the dream incursion and failed :joy:",
-            "FenchingFplos2 bought spawn in 1926"
+            "FenchingFplos2 bought spawn in 1926",
+            "fencingf+2 autoez improves my odds of success in player versus player encounters on 2b2t.org",
+            "2builders2tools is backdoored by andrewmc12 <player> ezzzzz",
+            "fobuse hacx owns larpville",
+            "You Died!",
+            "File Edit View Navigate Code Refactor Build Run Tools Git Window Help",
+            "that's 2b2t crazy",
+            "whatisshue",
+            "hockeyware on bottom <player>",
+            "<player> IS NOT THE KING OF 2B2T! U MAD NIGGERS! U MAD NEWFAGS!",
+            "eclipse ide is trash people",
+            "gradle is slow"
     };
+
+    public AutoEZ() {
+        super("AutoEZ", "Automatically says ez when you kill someone", Category.Chat);
+    }
 
     @SubscribeEvent
     public void onDeath(DeathEvent event) {
         if (event.getPlayer().equals(mc.player) || getFencing().friendManager.isFriend(event.getPlayer().getUniqueID()) || !fullNullCheck()) return;
         String randomMessage = (ezMessages[new Random().nextInt(ezMessages.length)]);
         for (int i = 0; i < 1; i++) { //added a for loop that loops once so we don't get more than 1 message
-            mc.player.connection.sendPacket(new CPacketChatMessage((greenText.getValue() ? ">" : "" ) + randomMessage.replaceAll("<player>", event.getPlayer().getDisplayNameString())));
+            mc.player.connection.sendPacket(new CPacketChatMessage((greenText.getValue() ? ">" : "") + randomMessage.replaceAll("<player>", event.getPlayer().getDisplayNameString())));
         }
     }
 }

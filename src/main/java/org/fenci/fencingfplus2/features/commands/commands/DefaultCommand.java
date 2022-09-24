@@ -28,7 +28,8 @@ public class DefaultCommand extends Command {
                 } else {
                     ClientMessage.sendMessage("Could not find module.");
                 }
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
         } else {
             ClientMessage.sendMessage(getSyntax());
         }

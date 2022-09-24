@@ -1,21 +1,23 @@
 package org.fenci.fencingfplus2.util.render;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraftforge.common.MinecraftForge;
 import org.fenci.fencingfplus2.features.module.modules.client.HUD;
 
 import java.awt.*;
 
 public class ColorUtil {
 
-    public static Color releasedDynamicRainbow(int delay, float saturation, float brightness) {
-        double rainbowState = Math.ceil((double) (System.currentTimeMillis() + (long) delay) / 20.0);
-        return Color.getHSBColor((float) (rainbowState % 360.0 / 360.0), saturation / 255.0f, brightness / 255.0f);
-    }
-
+    public static ChatFormatting nameColorFromSetting;
+    public static ChatFormatting nameBracketFromSetting;
     int r;
     int g;
     int b;
     int a;
+
 
     public ColorUtil(int r, int g, int b) {
         this.r = r;
@@ -24,17 +26,44 @@ public class ColorUtil {
         this.a = 255;
     }
 
+    public static Color releasedDynamicRainbow(int delay, float saturation, float brightness) {
+        double rainbowState = Math.ceil((double) (System.currentTimeMillis() + (long) delay) / 20.0);
+        return Color.getHSBColor((float) (rainbowState % 360.0 / 360.0), saturation / 255.0f, brightness / 255.0f);
+    }
+
+    public static ChatFormatting getDimentionColor(int dimention) {
+        switch (dimention) {
+            case -1:
+                return ChatFormatting.DARK_RED;
+            case 0:
+                return ChatFormatting.DARK_GREEN;
+            case 1:
+                return ChatFormatting.DARK_PURPLE;
+            default:
+                return ChatFormatting.GRAY;
+        }
+    }
 
     public static int toHex(int r, int g, int b) {
         return 0xFF000000 | (r & 0xFF) << 16 | (g & 0xFF) << 8 | b & 0xFF;
     }
 
-    public static float [] toRGBA(int hex) {
+    public static float[] toRGBA(int hex) {
         // r, g, b, a
         return new float[]{(hex >> 16 & 0xff) / 255.0f, (hex >> 8 & 0xff) / 255.0f, (hex & 0xff) / 255.0f, (hex >> 24 & 0xff) / 255.0f};
     }
 
-    public static ChatFormatting nameColorFromSetting;
+    public static int getHealthColor(final Entity entity) {
+        final int scale = (int) Math.round(255.0 - ((EntityLivingBase) entity).getHealth() * 255.0 / ((EntityLivingBase) entity).getMaxHealth());
+        final int damageColor = 255 - scale << 8 | scale << 16;
+        return 0xFF000000 | damageColor;
+    }
+
+    public static int getHealthColor(final float health) {
+        final int scale = (int) Math.round(255.0 - health * 255.0 / Minecraft.getMinecraft().player.getMaxHealth());
+        final int damageColor = 255 - scale << 8 | scale << 16;
+        return 0xFF000000 | damageColor;
+    }
 
     public static ChatFormatting getNameColorFromSetting(HUD.NameColor setting) {
         if (setting.equals(HUD.NameColor.DarkRed)) {
@@ -87,8 +116,6 @@ public class ColorUtil {
         }
         return nameColorFromSetting;
     }
-
-    public static ChatFormatting nameBracketFromSetting;
 
     public static ChatFormatting getBracketColorFromSetting(HUD.BracketColor setting) {
         if (setting.equals(HUD.BracketColor.DarkRed)) {

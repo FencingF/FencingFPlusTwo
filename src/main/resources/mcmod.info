@@ -3,7 +3,7 @@
     "modid": "fencingf+2",
     "name": "FencingF+2",
     "description": "A Minecraft Anarchy Utility and PvP Mod by FencingF and AndrewMC12 with help from Sxmurai, EBSmash, notperry and Flixzit.",
-    "version": "2.0-beta",
+    "version": "2.4.2",
     "mcversion": "1.12.2",
     "url": "https://discord.gg/6te3fK3bAu",
     "updateUrl": "https://github.com/Smokeybear12/fencingfplus2",
@@ -15,8 +15,8 @@
       "notperry",
       "Flixzit"
     ],
-    "credits": "TODO",
-    "logoFile": "https://media.discordapp.net/attachments/869299703215452230/965144914205761576/icon.gif",
+    "credits": "The Forge Team, and flixzit and fencingf for starting the mod.",
+    "logoFile": "assets/logo.png",
     "screenshots": [],
     "dependencies": []
   }

@@ -36,11 +36,12 @@ public class FriendCommand extends Command {
                         }
                     }
 
-                } catch (NullPointerException ignored) {}
+                } catch (NullPointerException ignored) {
+                }
             }
             if (args.get(0).equalsIgnoreCase("list")) {
                 if (FencingFPlus2.INSTANCE.friendManager.getFriends().isEmpty()) {
-                    ClientMessage.sendMessage("You have no friends.");
+                    ClientMessage.sendMessage("You have no friend lmfao.");
                 } else {
                     for (Friend friend : FencingFPlus2.INSTANCE.friendManager.getFriends()) {
                         ClientMessage.sendMessage(friend.getAlias());

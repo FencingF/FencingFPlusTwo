@@ -27,7 +27,8 @@ public class SetCommand extends Command {
                         }
                     }
                 }
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
         } else {
             ClientMessage.sendErrorMessage(getSyntax());
         }

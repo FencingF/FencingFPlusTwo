@@ -6,7 +6,6 @@ import net.minecraft.init.Items;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
-import org.fenci.fencingfplus2.features.module.Category;
 import org.fenci.fencingfplus2.features.module.Module;
 
 public class AutoArmor extends Module {

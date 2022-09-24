@@ -9,7 +9,6 @@ public class EnumConverter {
         this.clazz = clazz;
     }
 
-
     public Enum doBackward(JsonElement jsonElement) {
         try {
             return Enum.valueOf(this.clazz, jsonElement.getAsString());

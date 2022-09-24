@@ -4,14 +4,14 @@ import com.google.common.collect.Lists;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import org.fenci.fencingfplus2.features.module.Module;
-import org.fenci.fencingfplus2.features.module.modules.combat.*;
-import org.fenci.fencingfplus2.features.module.modules.player.*;
-import org.fenci.fencingfplus2.features.module.modules.client.*;
-import org.fenci.fencingfplus2.features.module.modules.movement.*;
-import org.fenci.fencingfplus2.features.module.modules.misc.*;
-import org.fenci.fencingfplus2.features.module.modules.render.*;
-import org.fenci.fencingfplus2.features.module.modules.exploit.*;
 import org.fenci.fencingfplus2.features.module.modules.chat.*;
+import org.fenci.fencingfplus2.features.module.modules.client.*;
+import org.fenci.fencingfplus2.features.module.modules.combat.*;
+import org.fenci.fencingfplus2.features.module.modules.exploit.*;
+import org.fenci.fencingfplus2.features.module.modules.misc.*;
+import org.fenci.fencingfplus2.features.module.modules.movement.*;
+import org.fenci.fencingfplus2.features.module.modules.player.*;
+import org.fenci.fencingfplus2.features.module.modules.render.*;
 import org.fenci.fencingfplus2.util.Globals;
 import org.fenci.fencingfplus2.util.tracking.TrackerManager;
 import org.lwjgl.input.Keyboard;
@@ -27,6 +27,7 @@ public class ModuleManager implements Globals {
 
                 // client
                 new ClickGUI(),
+                new DataLink(),
                 new DiscordRPC(),
                 new HUD(),
                 new Preferences(),
@@ -43,6 +44,7 @@ public class ModuleManager implements Globals {
                 //new Burrow(),
                 new Criticals(),
                 new FastProjectile(),
+                new HoleFiller(),
                 new HoleSnap(),
                 new Offhand(),
                 new PacketMine(),
@@ -55,7 +57,9 @@ public class ModuleManager implements Globals {
                 new TrackerManager(),
                 new AutoWalk(),
                 new ElytraFly(),
+                //new ElytraFly2b2t(),
                 new GroundStrafe(),
+                new NoFall(),
                 new NoSlow(),
                 new ReverseStep(),
                 new Speed(),
@@ -82,6 +86,7 @@ public class ModuleManager implements Globals {
                 new ExtraTab(),
                 new Fullbright(),
                 new HoleESP(),
+                new LightningDeath(),
                 new LogoutSpots(),
                 new Nametags(),
                 new NoPlayerClutter(),
@@ -93,12 +98,15 @@ public class ModuleManager implements Globals {
 
                 //misc
                 new AntiLevitation(),
-                new AntiPauseScreen(),
                 new AutoKit(),
+
                 new FakePlayer(),
                 //new HotbarReplenish(),
+                new NickHider(),
+                //new NoPause(),
                 new PacketLogger(),
-                new PingSpoof(),
+                //new PingSpoof(),
+                //new StashMover(),
                 new Timer(),
                 new TotemName(),
                 new XCarry(),
@@ -106,11 +114,12 @@ public class ModuleManager implements Globals {
                 //exploit
                 //new AntiWeakness(),
                 //new AutoDupe(),
+                new Crash(),
                 new ChorusControl(),
                 //new ChunkLoader(),
                 //new ChorusPredict(),
-                //new EggFinder(),
-                new FiveBTP(),
+                //new FiveBTP(),
+
                 new HitboxCity(),
                 new NoPacketTP(),
                 new PearlBait(),
@@ -119,13 +128,13 @@ public class ModuleManager implements Globals {
                 new AntiLog4J(),
                 new AutoEZ(),
                 new CustomChat(),
-                new Notifier()
+                new Notifier(),
+                new Spam()
 
         );
     }
 
     public ModuleManager() {
-
         modules.forEach(Module::register);
     }
 

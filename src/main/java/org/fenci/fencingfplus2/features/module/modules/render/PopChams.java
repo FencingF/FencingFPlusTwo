@@ -5,26 +5,12 @@ import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.fenci.fencingfplus2.events.player.TotemPopEvent;
-import org.fenci.fencingfplus2.features.module.Category;
 import org.fenci.fencingfplus2.features.module.Module;
 import org.fenci.fencingfplus2.setting.Setting;
 import org.fenci.fencingfplus2.util.client.Timer;
 import org.fenci.fencingfplus2.util.render.PopChamsUtil;
 
 public class PopChams extends Module {
-
-    public static PopChams INSTANCE;
-
-    public PopChams() {
-        super("PopChams", "Cool pop render", Category.Render);
-        INSTANCE = this;
-    }
-
-    EntityOtherPlayerMP player;
-    ModelPlayer playerModel;
-    Long startTime;
-    double alphaFill;
-    double alphaLine;
 
     public static final Setting<Integer> fillred = new Setting<>("FillRed", 57, 0, 255);
     public static final Setting<Integer> fillgreen = new Setting<>("FillGreen", 236, 0, 255);
@@ -40,8 +26,18 @@ public class PopChams extends Module {
     public static final Setting<Boolean> follow = new Setting<>("Follow", false);
     public static final Setting<Double> followTime = new Setting<>("FollowTime", 0.4, 0.1, 2);
     public static final Setting<Boolean> self = new Setting<>("Self", false);
-
+    public static PopChams INSTANCE;
+    EntityOtherPlayerMP player;
+    ModelPlayer playerModel;
+    long startTime;
+    double alphaFill;
+    double alphaLine;
     Timer followTimer = new Timer();
+
+    public PopChams() {
+        super("PopChams", "Cool pop render", Category.Render);
+        INSTANCE = this;
+    }
 
     @SubscribeEvent
     public void onPop(TotemPopEvent event) {

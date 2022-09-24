@@ -4,6 +4,7 @@ import net.minecraftforge.fml.common.eventhandler.Event;
 
 import java.util.UUID;
 
+//FriendEvent is a class that extends Event and is used to handle the event of the Friend command.
 public class FriendEvent extends Event {
 
     String name;

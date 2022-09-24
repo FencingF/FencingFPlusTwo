@@ -1,10 +1,8 @@
 package org.fenci.fencingfplus2.features.module.modules.client;
 
-import org.fenci.fencingfplus2.features.module.Category;
 import org.fenci.fencingfplus2.features.module.Module;
-import org.fenci.fencingfplus2.gui.click.ClickGUIScreen;
+import org.fenci.fencingfplus2.gui.ClickGUIScreen;
 import org.fenci.fencingfplus2.setting.Setting;
-import org.fenci.fencingfplus2.util.Globals;
 import org.lwjgl.input.Keyboard;
 
 public class ClickGUI extends Module {
@@ -12,13 +10,25 @@ public class ClickGUI extends Module {
     //old color 245, 34, 34
     //purple color 108, 0, 255
     //light blue 57, 236, 255
-    public static final Setting<Integer> getred = new Setting<>("Red", 57, 0, 255);
-    public static final Setting<Integer> getgreen = new Setting<>("Green", 236, 0, 255);
-    public static final Setting<Integer> getblue = new Setting<>("Blue", 255, 0, 255);
+
+    //nice color i found 96, 194, 255
+    public static final Setting<Integer> getred = new Setting<>("OutlineRed", 96, 0, 255);
+    public static final Setting<Integer> getgreen = new Setting<>("OutlineGreen", 194, 0, 255);
+    public static final Setting<Integer> getblue = new Setting<>("OutlineBlue", 255, 0, 255);
+    public static final Setting<Integer> insidered = new Setting<>("InsideRed", 96, 0, 255);
+    public static final Setting<Integer> insidegreen = new Setting<>("InsideGreen", 194, 0, 255);
+    public static final Setting<Integer> insideblue = new Setting<>("InsideBlue", 255, 0, 255);
+    public static final Setting<Integer> backgroundred = new Setting<>("BackgroundRed", 45, 0, 255);
+    public static final Setting<Integer> backgroundgreen = new Setting<>("BackgroundGreen", 45, 0, 255);
+    public static final Setting<Integer> backgroundblue = new Setting<>("BackgroundBlue", 45, 0, 255);
+    public static final Setting<Boolean> brackets = new Setting<>("Brackets", false);
+    public static final Setting<Boolean> moduleCount = new Setting<>("ModuleCount", true);
+    public static final Setting<Float> lineWidth = new Setting<>("LineWidth", 3.7f, 0.1f, 10f);
     public static final Setting<Boolean> rainbow = new Setting<>("Rainbow", false);
     //public static final Setting<Integer> rainbowSpeed = new Setting<>("RainbowSpeed", 3, 0, 10);
     public static final Setting<Float> saturation = new Setting<>("Rainbow Saturation", 255f, 1, 255);
     public static final Setting<Float> brightness = new Setting<>("Rainbow Brightness", 255f, 0, 255);
+
     public static ClickGUI INSTANCE;
 
     public ClickGUI() {
@@ -33,19 +43,19 @@ public class ClickGUI extends Module {
             return;
         }
 
-        Globals.mc.displayGuiScreen(ClickGUIScreen.getInstance());
+        mc.displayGuiScreen(ClickGUIScreen.getInstance());
     }
 
     @Override
     protected void onDisable() {
         if (fullNullCheck()) {
-            Globals.mc.displayGuiScreen(null);
+            mc.displayGuiScreen(null);
         }
     }
 
     @Override
     public void onUpdate() {
-        if (Globals.mc.currentScreen == null) {
+        if (mc.currentScreen == null) {
             toggle(true);
         }
     }

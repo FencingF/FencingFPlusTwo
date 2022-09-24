@@ -10,7 +10,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.fenci.fencingfplus2.features.module.Category;
 import org.fenci.fencingfplus2.features.module.Module;
 import org.fenci.fencingfplus2.setting.Setting;
 import org.fenci.fencingfplus2.util.client.ClientMessage;
@@ -25,20 +24,20 @@ import org.fenci.fencingfplus2.util.world.HoleUtil;
 import static org.fenci.fencingfplus2.util.world.BlockUtil.getRenderColor;
 
 public class Surround extends Module {
-    public Surround() {
-        super("Surround", "Automatically surrounds you with obsidian", Category.Combat);
-    }
-
     public static final Setting<Double> delay = new Setting<>("Delay", 0.0, 0.0, 3);
     public static final Setting<Boolean> render = new Setting<>("Render", true);
     public static final Setting<Boolean> renderAfterDone = new Setting<>("RenderAfterComplete", true);
     public static final Setting<Boolean> rotate = new Setting<>("Rotate", true);
+    public static final Setting<Boolean> swing = new Setting<>("Swing", true);
     public static final Setting<Boolean> supportingBlocks = new Setting<>("SupportBlocks", true);
     public static final Setting<Boolean> antiGhost = new Setting<>("AntiGhost", true);
     public static final Setting<Center> centerMode = new Setting<>("CenterMode", Center.Motion);
-    public static final Setting<WhenDisable> disableOn = new Setting<>("DisableOn", WhenDisable.OutOfHole);
-
+    public static final Setting<WhenDisable> disableOn = new Setting<>("DisableOn", WhenDisable.OnMove);
     Timer delayTimer = new Timer();
+
+    public Surround() {
+        super("Surround", "Automatically surrounds you with obsidian", Category.Combat);
+    }
 
     @Override
     public void onEnable() {
@@ -55,6 +54,7 @@ public class Surround extends Module {
             }
         }
     }
+
     //TODO: Fix placing when entites are where the block goes
     @Override
     public void onUpdate() {
@@ -71,10 +71,10 @@ public class Surround extends Module {
             for (BlockPos pos : CityUtil.getSurroundPositions()) {
                 if ((delayTimer.hasReached((long) (delay.getValue() * 100)) || delay.getValue() == 0) && BlockUtil.getBlock(pos).equals(Blocks.AIR)) {
                     InventoryUtil.switchTo(Item.getItemFromBlock(Blocks.OBSIDIAN));
-                    BlockUtil.placeBlock(pos, EnumHand.MAIN_HAND, rotate.getValue(), false);
+                    BlockUtil.placeBlock(pos, EnumHand.MAIN_HAND, rotate.getValue(), false, swing.getValue());
                     InventoryUtil.switchToSlot(previousSlot);
                     if (antiGhost.getValue() && !(BlockUtil.getBlock(pos) instanceof BlockContainer)) {
-                        mc.player.connection.sendPacket(new CPacketPlayerDigging(CPacketPlayerDigging.Action.ABORT_DESTROY_BLOCK, pos, EnumFacing.UP));
+                        mc.player.connection.sendPacket(new CPacketPlayerDigging(CPacketPlayerDigging.Action.START_DESTROY_BLOCK, pos, EnumFacing.UP));
                     }
                     delayTimer.reset();
                 }

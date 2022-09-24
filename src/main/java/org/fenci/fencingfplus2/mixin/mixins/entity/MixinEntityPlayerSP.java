@@ -23,16 +23,26 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(EntityPlayerSP.class)
 public abstract class MixinEntityPlayerSP extends AbstractClientPlayer {
 
-    @Shadow private double lastReportedPosX;
-    @Shadow private double lastReportedPosY;
-    @Shadow private double lastReportedPosZ;
-    @Shadow private float lastReportedYaw;
-    @Shadow private float lastReportedPitch;
-    @Shadow private boolean serverSprintState;
-    @Shadow private boolean serverSneakState;
-    @Shadow private boolean prevOnGround;
-    @Shadow private int positionUpdateTicks;
-    @Shadow private boolean autoJumpEnabled;
+    @Shadow
+    private double lastReportedPosX;
+    @Shadow
+    private double lastReportedPosY;
+    @Shadow
+    private double lastReportedPosZ;
+    @Shadow
+    private float lastReportedYaw;
+    @Shadow
+    private float lastReportedPitch;
+    @Shadow
+    private boolean serverSprintState;
+    @Shadow
+    private boolean serverSneakState;
+    @Shadow
+    private boolean prevOnGround;
+    @Shadow
+    private int positionUpdateTicks;
+    @Shadow
+    private boolean autoJumpEnabled;
 
     public MixinEntityPlayerSP(World worldIn, GameProfile playerProfile) {
         super(worldIn, playerProfile);
@@ -48,7 +58,7 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer {
         }
     }
 
-    @Inject(method={"pushOutOfBlocks"}, at={@At(value="HEAD")}, cancellable=true)
+    @Inject(method = {"pushOutOfBlocks"}, at = {@At(value = "HEAD")}, cancellable = true)
     private void pushOutOfBlocksHook(double x, double y, double z, CallbackInfoReturnable<Boolean> info) {
         PushEvent event = new PushEvent(0);
         MinecraftForge.EVENT_BUS.post(event);
@@ -79,12 +89,13 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer {
     /**
      * Taken from the minecraft code.
      * Spoofs position and rotation states sent to the server
-     * @param x The x value
-     * @param y The y value
-     * @param z The z value
+     *
+     * @param x        The x value
+     * @param y        The y value
+     * @param z        The z value
      * @param grounded If we are on the ground or not
-     * @param yaw The yaw rotation value
-     * @param pitch The pitch rotation value
+     * @param yaw      The yaw rotation value
+     * @param pitch    The pitch rotation value
      */
     private void modifiedOnUpdateWalkingPlayer(double x, double y, double z, boolean grounded, float yaw, float pitch) {
         if (isSprinting() != serverSprintState) {

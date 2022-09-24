@@ -24,7 +24,6 @@ import org.fenci.fencingfplus2.events.network.PacketEvent;
 import org.fenci.fencingfplus2.events.player.ElytraEvent;
 import org.fenci.fencingfplus2.events.player.MoveEvent;
 import org.fenci.fencingfplus2.events.player.UpdateWalkingPlayerEvent;
-import org.fenci.fencingfplus2.features.module.Category;
 import org.fenci.fencingfplus2.features.module.Module;
 import org.fenci.fencingfplus2.mixin.mixins.network.ICPacketPlayer;
 import org.fenci.fencingfplus2.setting.Setting;
@@ -37,77 +36,59 @@ import java.util.Random;
 
 public class ElytraFly extends Module {
 
-    public static ElytraFly INSTANCE;
-
-    public ElytraFly() {
-        super("ElytraFly", "Allows you to fly easier with elytra", Category.Movement);
-        INSTANCE = this;
-    }
-
     private final static Setting<Mode> mode = new Setting<>("Mode", Mode.Control);
-
     private final static Setting<Float> packetDelay = new Setting<>("Limit", 1F, 0.1F, 5F);
     private final static Setting<Float> staticDelay = new Setting<>("Delay", 5F, 0.1F, 20F);
     private final static Setting<Float> timeout = new Setting<>("Timeout", 0.5F, 0.1F, 1F);
-
     private final static Setting<Boolean> stopMotion = new Setting<>("StopMotion", true);
     private final static Setting<Boolean> freeze = new Setting<>("Freeze", false);
-
     private final static Setting<Boolean> cruiseControl = new Setting<>("CruiseControl", false);
     private final static Setting<Double> minUpSpeed = new Setting<>("MinUpSpeed", 0.5D, 0.1D, 5D);
-
     private final static Setting<Boolean> autoSwitch = new Setting<>("AutoSwitch", false);
-
     private final static Setting<Float> factor = new Setting<>("Factor", 1.5F, 0.1F, 50F);
     private final static Setting<Integer> minSpeed = new Setting<>("MinSpeed", 20, 0.1, 50);
     private final static Setting<Float> upFactor = new Setting<>("UpFactor", 1.0f, 0, 10);
     private final static Setting<Float> downFactor = new Setting<>("DownFactor", 1.0F, 0F, 10.0F);
-
     private final static Setting<Boolean> forceHeight = new Setting<>("ForceHeight", false);
     private final static Setting<Integer> manualHeight = new Setting<>("Height", 121, 1, 256);
-
     private final static Setting<Boolean> groundSafety = new Setting<>("GroundSafety", false);
     private final static Setting<Float> triggerHeight = new Setting<>("TriggerHeight", 0.3F, 0.05F, 1F);
-
     // Normal/Boost/Glide settings
     private final static Setting<Float> speed = new Setting<>("Speed", 1.0F, 0.1F, 10F);
     private final static Setting<Float> sneakDownSpeed = new Setting<>("DownSpeed", 1.0F, 0.1F, 10F);
-
     private final static Setting<Boolean> instantFly = new Setting<>("InstantFly", true);
     private final static Setting<Boolean> boostTimer = new Setting<>("Timer", true);
-
     private final static Setting<Boolean> speedLimit = new Setting<>("SpeedLimit", true);
     private final static Setting<Float> maxSpeed = new Setting<>("MaxSpeed", 2.5F, 0.1F, 10F);
-
     private final static Setting<Boolean> noDrag = new Setting<>("NoDrag", false);
-
     // Packet settings
     private final static Setting<Boolean> accelerate = new Setting<>("Accelerate", true);
     private final static Setting<Float> acceleration = new Setting<>("Acceleration", 1.0F, 0.1F, 5F);
     private final static Setting<StrictMode> strict = new Setting<>("Strict", StrictMode.None);
     private final static Setting<Boolean> antiKick = new Setting<>("AntiKick", true);
     private final static Setting<Boolean> infDurability = new Setting<>("InfDurability", true);
-
+    public static ElytraFly INSTANCE;
     private static boolean hasElytra = false;
-
-    private boolean rSpeed;
-
-    private double curSpeed;
-    public double tempSpeed;
-
-    private double height;
-
     private final Random random = new Random();
-
     private final Timer instantFlyTimer = new Timer();
     private final Timer staticTimer = new Timer();
-
     private final Timer rocketTimer = new Timer();
-
     private final Timer strictTimer = new Timer();
-
+    public double tempSpeed;
+    private boolean rSpeed;
+    private double curSpeed;
+    private double height;
     private boolean isJumping = false;
     private boolean hasTouchedGround = false;
+
+    public ElytraFly() {
+        super("ElytraFly", "Allows you to fly easier with elytra", Category.Movement);
+        INSTANCE = this;
+    }
+
+    public static boolean isHasElytra() {
+        return hasElytra;
+    }
 
     @Override
     public void onEnable() {
@@ -143,8 +124,8 @@ public class ElytraFly extends Module {
             height = mc.player.posY;
         }
 
-        for(ItemStack is : mc.player.getArmorInventoryList()) {
-            if(is.getItem() instanceof ItemElytra) {
+        for (ItemStack is : mc.player.getArmorInventoryList()) {
+            if (is.getItem() instanceof ItemElytra) {
                 hasElytra = true;
                 break;
             } else {
@@ -237,12 +218,9 @@ public class ElytraFly extends Module {
         }
     }
 
-    public static boolean isHasElytra() {
-        return hasElytra;
-    }
     private boolean checkIfBlockInBB(int minY) {
-        for(int iX = MathHelper.floor(mc.player.getEntityBoundingBox().minX); iX < MathHelper.ceil(mc.player.getEntityBoundingBox().maxX); iX++) {
-            for(int iZ = MathHelper.floor(mc.player.getEntityBoundingBox().minZ); iZ < MathHelper.ceil(mc.player.getEntityBoundingBox().maxZ); iZ++) {
+        for (int iX = MathHelper.floor(mc.player.getEntityBoundingBox().minX); iX < MathHelper.ceil(mc.player.getEntityBoundingBox().maxX); iX++) {
+            for (int iZ = MathHelper.floor(mc.player.getEntityBoundingBox().minZ); iZ < MathHelper.ceil(mc.player.getEntityBoundingBox().maxZ); iZ++) {
                 IBlockState state = mc.world.getBlockState(new BlockPos(iX, minY, iZ));
                 if (state.getBlock() != Blocks.AIR) {
                     return false;
@@ -255,7 +233,7 @@ public class ElytraFly extends Module {
     // Firework mode
 //    @Override
 //    public void onUpdate() {
-        //if (event.getPhase() != TickEvent.Phase.START) return;
+    //if (event.getPhase() != TickEvent.Phase.START) return;
 
 
     // Normal/Boost/Control mode
@@ -399,18 +377,18 @@ public class ElytraFly extends Module {
                 double d8 = Math.sqrt(mc.player.motionX * mc.player.motionX + mc.player.motionZ * mc.player.motionZ);
                 double d1 = vec3d.length();
                 float f4 = MathHelper.cos(f);
-                f4 = (float)((double)f4 * (double)f4 * Math.min(1.0D, d1 / 0.4D));
-                mc.player.motionY += -0.08D + (double)f4 * 0.06D;
+                f4 = (float) ((double) f4 * (double) f4 * Math.min(1.0D, d1 / 0.4D));
+                mc.player.motionY += -0.08D + (double) f4 * 0.06D;
 
                 if (mc.player.motionY < 0.0D && d6 > 0.0D) {
-                    double d2 = mc.player.motionY * -0.1D * (double)f4;
+                    double d2 = mc.player.motionY * -0.1D * (double) f4;
                     mc.player.motionY += d2;
                     mc.player.motionX += vec3d.x * d2 / d6;
                     mc.player.motionZ += vec3d.z * d2 / d6;
                 }
 
                 if (f < 0.0F) {
-                    double d10 = d8 * (double)(-MathHelper.sin(f)) * 0.04D;
+                    double d10 = d8 * (double) (-MathHelper.sin(f)) * 0.04D;
                     mc.player.motionY += d10 * 3.2D;
                     mc.player.motionX -= vec3d.x * d10 / d6;
                     mc.player.motionZ -= vec3d.z * d10 / d6;

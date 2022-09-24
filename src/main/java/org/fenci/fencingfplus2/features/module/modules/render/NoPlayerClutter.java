@@ -7,7 +7,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.fenci.fencingfplus2.events.render.RenderArmorEvent;
 import org.fenci.fencingfplus2.events.render.RenderLivingEntityEvent;
-import org.fenci.fencingfplus2.features.module.Category;
 import org.fenci.fencingfplus2.features.module.Module;
 import org.fenci.fencingfplus2.setting.Setting;
 
@@ -16,15 +15,12 @@ import java.util.Set;
 
 public class NoPlayerClutter extends Module {
 
-    public static NoPlayerClutter INSTANCE;
+    public static final Setting<Boolean> removeArmor = new Setting<>("NoArmor", true);
+    public static final Setting<Boolean> texture = new Setting<>("Texture", true);
 
     public NoPlayerClutter() {
         super("NoPlayerClutter", "Removes player clutter", Category.Render);
-        INSTANCE = this;
     }
-
-    public static final Setting<Boolean> removeArmor = new Setting<>("NoArmor", true);
-    public static final Setting<Boolean> texture = new Setting<>("Texture", true);
 
     @SubscribeEvent
     public void onRenderLivingEntity(RenderLivingEntityEvent event) {

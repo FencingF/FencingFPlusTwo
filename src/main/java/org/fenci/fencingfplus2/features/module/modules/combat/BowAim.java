@@ -2,9 +2,7 @@ package org.fenci.fencingfplus2.features.module.modules.combat;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
-import org.fenci.fencingfplus2.features.module.Category;
 import org.fenci.fencingfplus2.features.module.Module;
-import org.fenci.fencingfplus2.util.Globals;
 
 import java.util.Objects;
 
@@ -13,14 +11,6 @@ import static org.fenci.fencingfplus2.util.player.PlayerUtil.findClosestTarget;
 public class BowAim extends Module {
     public BowAim() {
         super("BowAim", "Automatically aims at people", Category.Combat);
-    }
-
-    @Override
-    public void onUpdate() {
-        if (Globals.mc.player.getHeldItemMainhand().getItem() == Items.BOW && Globals.mc.player.isHandActive() && findClosestTarget() != null) {
-            mc.player.rotationYaw = rotateToPlayer(Objects.requireNonNull(findClosestTarget()))[0];
-            mc.player.rotationPitch = rotateToPlayer(Objects.requireNonNull(findClosestTarget()))[1];
-        }
     }
 
     public static float[] rotateToPlayer(EntityPlayer entity) {
@@ -40,5 +30,13 @@ public class BowAim extends Module {
         final float yaw = (float) Math.toDegrees(Math.atan2(z, x)) - 90.0f;
         final float pitch = (float) Math.toDegrees(Math.atan2(y, dist));
         return new float[]{yaw, pitch};
+    }
+
+    @Override
+    public void onUpdate() {
+        if (mc.player.getHeldItemMainhand().getItem() == Items.BOW && mc.player.isHandActive() && findClosestTarget() != null) {
+            mc.player.rotationYaw = rotateToPlayer(Objects.requireNonNull(findClosestTarget()))[0];
+            mc.player.rotationPitch = rotateToPlayer(Objects.requireNonNull(findClosestTarget()))[1];
+        }
     }
 }

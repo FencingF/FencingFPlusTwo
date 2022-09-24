@@ -3,18 +3,20 @@ package org.fenci.fencingfplus2.features.module.modules.player;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import org.fenci.fencingfplus2.features.module.Category;
 import org.fenci.fencingfplus2.features.module.Module;
 import org.fenci.fencingfplus2.setting.Setting;
 import org.fenci.fencingfplus2.util.client.ClientMessage;
 import org.fenci.fencingfplus2.util.player.InventoryUtil;
 
 public class ChestSwap extends Module {
+    public static final Setting<Boolean> chat = new Setting<>("ChatAnnounce", true);
+
     public ChestSwap() {
         super("ChestSwap", "Allows you to switch between elytra and chestplate", Category.Player);
+        INSTANCE = this;
     }
 
-    public static final Setting<Boolean> chat = new Setting<>("ChatAnnounce", true);
+    public static ChestSwap INSTANCE;
 
     @Override
     public void onEnable() {
@@ -29,7 +31,7 @@ public class ChestSwap extends Module {
                 if (chat.getValue()) {
                     ClientMessage.sendOverwriteClientMessage("Switched to Chestplate");
                 }
-            } else {
+            } else if (chat.getValue()){
                 ClientMessage.sendMessage("No Chestplate was found in inventory", true);
             }
         } else if (InventoryUtil.getItemCount(Items.ELYTRA, true) != 0) {
@@ -40,7 +42,7 @@ public class ChestSwap extends Module {
             if (chat.getValue()) {
                 ClientMessage.sendOverwriteClientMessage("Switched to Elytra");
             }
-        } else {
+        } else if (chat.getValue()){
             ClientMessage.sendMessage("No Elytra was found in inventory", true);
         }
         this.toggle(true);

@@ -5,7 +5,6 @@ import net.minecraft.network.play.server.SPacketDisconnect;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import org.fenci.fencingfplus2.features.module.Category;
 import org.fenci.fencingfplus2.features.module.Module;
 import org.fenci.fencingfplus2.setting.Setting;
 import org.fenci.fencingfplus2.util.player.InventoryUtil;
@@ -67,7 +66,8 @@ public class AutoLog extends Module {
                     this.toggle(true);
                 }
             }
-        } catch (NullPointerException ignored) {}
+        } catch (NullPointerException ignored) {
+        }
     }
 
     private String totemSpelling() {

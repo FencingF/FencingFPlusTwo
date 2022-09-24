@@ -11,7 +11,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.fenci.fencingfplus2.events.network.ConnectionEvent;
-import org.fenci.fencingfplus2.features.module.Category;
 import org.fenci.fencingfplus2.features.module.Module;
 import org.fenci.fencingfplus2.features.module.modules.client.Preferences;
 import org.fenci.fencingfplus2.util.render.PopChamsUtil;
@@ -23,15 +22,14 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class LogoutSpots extends Module {
-    public LogoutSpots() {
-        super("LogoutSpots", "Shows player logouts", Category.Render);
-    }
-
     private final List<LogoutSpot> logoutSpots = new CopyOnWriteArrayList<>();
-
     public ModelPlayer playerModel;
     Color lineColorS;
     Color fillColorS;
+
+    public LogoutSpots() {
+        super("LogoutSpots", "Shows player logouts", Category.Render);
+    }
 
     @SubscribeEvent
     public void onRender3D(RenderWorldLastEvent event) {
@@ -75,10 +73,10 @@ public class LogoutSpots extends Module {
                     Color fillFinal = new Color(fillColor.getRed(), fillColor.getGreen(), fillColor.getBlue(), 75);
                     PopChamsUtil.glColor(fillFinal);
                     GL11.glPolygonMode(1032, 6914);
-                    PopChamsUtil.renderEntity(player, this.playerModel, player.limbSwing, player.limbSwingAmount,  player.ticksExisted,  90,  90, 1.0f);
+                    PopChamsUtil.renderEntity(player, this.playerModel, player.limbSwing, player.limbSwingAmount, player.ticksExisted, 90, 90, 1.0f);
                     PopChamsUtil.glColor(outlineFinal);
                     GL11.glPolygonMode(1032, 6913);
-                    PopChamsUtil.renderEntity(player, this.playerModel,  player.limbSwing,  player.limbSwingAmount,  player.ticksExisted,  90,  90, 1.0f);
+                    PopChamsUtil.renderEntity(player, this.playerModel, player.limbSwing, player.limbSwingAmount, player.ticksExisted, 90, 90, 1.0f);
                     GL11.glPolygonMode(1032, 6914);
                     GL11.glPopAttrib();
                     RenderUtil.TessellatorUtil.releaseGL();
@@ -91,7 +89,7 @@ public class LogoutSpots extends Module {
         GL11.glPushMatrix();
         String name = (getFencing().friendManager.isFriend(player.getUniqueID()) ? ChatFormatting.AQUA : ChatFormatting.WHITE) + player.getName();
         final float var14 = 0.016666668f * getNametagSize(player);
-        GL11.glTranslated((float)x, (float)y + 2.5, (float)z);
+        GL11.glTranslated((float) x, (float) y + 2.5, (float) z);
         GL11.glNormal3f(0.0f, 1.0f, 0.0f);
         GL11.glRotatef(-mc.getRenderManager().playerViewY, 0.0f, 1.0f, 0.0f);
         GL11.glRotatef(mc.getRenderManager().playerViewX, 1.0f, 0.0f, 0.0f);
@@ -105,7 +103,7 @@ public class LogoutSpots extends Module {
 
         RenderUtil.drawBorderedRect(-width - 3, 8.0, width + 2, 20.0, 1.2, 1962934272, c.getRGB());
 
-        mc.fontRenderer.drawStringWithShadow(name, (float)(-width), 10.0f, new Color(161, 61, 168).getRGB());
+        mc.fontRenderer.drawStringWithShadow(name, (float) (-width), 10.0f, new Color(161, 61, 168).getRGB());
 
         player.getHeldItemMainhand();
         player.getHeldItemOffhand();
@@ -120,7 +118,7 @@ public class LogoutSpots extends Module {
     private float getNametagSize(final EntityLivingBase player) {
         final ScaledResolution scaledRes = new ScaledResolution(Nametags.mc);
         final double twoDscale = scaledRes.getScaleFactor() / Math.pow(scaledRes.getScaleFactor(), 0.0 + 13);
-        return (float)twoDscale + Nametags.mc.player.getDistance(player) / 5.6f;
+        return (float) twoDscale + Nametags.mc.player.getDistance(player) / 5.6f;
     }
 
     @SubscribeEvent

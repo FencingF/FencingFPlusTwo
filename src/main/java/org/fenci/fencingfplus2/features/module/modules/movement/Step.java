@@ -1,19 +1,18 @@
 package org.fenci.fencingfplus2.features.module.modules.movement;
 
 import net.minecraft.network.play.client.CPacketPlayer;
-import org.fenci.fencingfplus2.features.module.Category;
 import org.fenci.fencingfplus2.features.module.Module;
 import org.fenci.fencingfplus2.setting.Setting;
 
 import static org.fenci.fencingfplus2.util.player.PlayerUtil.getBlockHeight;
 
 public class Step extends Module {
+    public static final Setting<Stepmode> mode = new Setting<>("Mode", Stepmode.Vanilla);
+    public static final Setting<Float> height = new Setting<>("Height", 2f, 1f, 6f);
+
     public Step() {
         super("Step", "Allows you to automatically step up blocks", Category.Movement);
     }
-
-    public static final Setting<Stepmode> mode = new Setting<>("Mode", Stepmode.Vanilla);
-    public static final Setting<Float> height = new Setting<>("Height", 2f, 1f, 6f);
 
     @Override
     public String getDisplayInfo() {

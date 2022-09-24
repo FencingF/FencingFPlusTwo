@@ -8,9 +8,7 @@ import net.minecraft.network.play.client.CPacketClickWindow;
 import net.minecraft.network.play.client.CPacketEntityAction;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.fenci.fencingfplus2.events.network.PacketEvent;
-import org.fenci.fencingfplus2.features.module.Category;
 import org.fenci.fencingfplus2.features.module.Module;
-import org.fenci.fencingfplus2.util.Globals;
 import org.fenci.fencingfplus2.util.player.InventoryUtil;
 
 public class StrictTotem extends Module {
@@ -49,7 +47,7 @@ public class StrictTotem extends Module {
     @SubscribeEvent
     public void onPacketSend(PacketEvent.Send event) {
         if (event.getPacket() instanceof CPacketClickWindow) {
-            Globals.mc.player.connection.sendPacket(new CPacketEntityAction(Globals.mc.player, CPacketEntityAction.Action.STOP_SPRINTING));
+            mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SPRINTING));
         }
     }
 }

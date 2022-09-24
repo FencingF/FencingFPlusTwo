@@ -7,7 +7,6 @@ import net.minecraft.inventory.ClickType;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.fenci.fencingfplus2.events.client.OptionChangeEvent;
-import org.fenci.fencingfplus2.features.module.Category;
 import org.fenci.fencingfplus2.features.module.Module;
 import org.fenci.fencingfplus2.features.module.modules.movement.NoSlow;
 import org.fenci.fencingfplus2.setting.Setting;
@@ -17,17 +16,16 @@ import org.fenci.fencingfplus2.util.player.PlayerUtil;
 
 public class Offhand extends Module {
 
-    public static Offhand INSTANCE;
-
-    public Offhand() {
-        super("Offhand","Allows you to manage your offhand for pvp", Category.Combat);
-        INSTANCE = this;
-    }
-
     public static final Setting<Integer> switchAt = new Setting<>("Health", 20, 0, 36);
     public static final Setting<Boolean> rightClickSwordGap = new Setting<>("SwordGap", true);
     public static final Setting<OffItem> itemToHold = new Setting<>("OffhandItem", OffItem.Totems);
     public static final Setting<Display> display = new Setting<>("Display", Display.Item);
+    public static Offhand INSTANCE;
+
+    public Offhand() {
+        super("Offhand", "Allows you to manage your offhand for pvp", Category.Combat);
+        INSTANCE = this;
+    }
 
     @Override
     public void onEnable() {

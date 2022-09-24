@@ -37,7 +37,8 @@ public class ScanCommand extends Command {
                             ClientMessage.sendModuleMessage("AutoJump", "Added " + new BlockPos(Integer.parseInt(args.get(1)), Integer.parseInt(args.get(2)), Integer.parseInt(args.get(3))) + " as your check position.");
                         }
                     }
-                } catch (Exception ignored) {}
+                } catch (Exception ignored) {
+                }
             }
         } else {
             ClientMessage.sendErrorMessage(getSyntax());

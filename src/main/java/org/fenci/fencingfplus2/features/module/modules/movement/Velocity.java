@@ -9,15 +9,10 @@ import net.minecraft.network.play.server.SPacketExplosion;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.fenci.fencingfplus2.events.network.PacketEvent;
 import org.fenci.fencingfplus2.events.player.PushEvent;
-import org.fenci.fencingfplus2.features.module.Category;
 import org.fenci.fencingfplus2.features.module.Module;
 import org.fenci.fencingfplus2.setting.Setting;
 
 public class Velocity extends Module {
-
-    public Velocity() {
-        super("Velocity", "Allows you to change your knockback", Category.Movement);
-    }
 
     public static final Setting<Float> horizontal = new Setting<>("Horizontal % ", 0.0f, 0.0f, 100.0f);
     public static final Setting<Float> vertical = new Setting<>("Vertical % ", 0.0f, 0.0f, 100.0f);
@@ -26,6 +21,10 @@ public class Velocity extends Module {
     public static final Setting<Boolean> water = new Setting<>("Water", true);
     public static final Setting<Boolean> ice = new Setting<>("Ice", true);
     public static final Setting<Boolean> fishingRods = new Setting<>("FishingRods", true);
+
+    public Velocity() {
+        super("Velocity", "Allows you to change your knockback", Category.Movement);
+    }
 
     @Override
     public String getDisplayInfo() {

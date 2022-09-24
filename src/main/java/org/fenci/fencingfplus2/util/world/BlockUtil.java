@@ -1,6 +1,7 @@
 package org.fenci.fencingfplus2.util.world;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockChest;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.network.play.client.CPacketPlayer;
@@ -46,7 +47,7 @@ public class BlockUtil implements Globals {
         return block.getBlockHardness(blockState, mc.world, pos) != -1.0f;
     }
 
-    public static boolean placeBlock(BlockPos pos, EnumHand hand, boolean rotate, boolean packet) {
+    public static boolean placeBlock(BlockPos pos, EnumHand hand, boolean rotate, boolean packet, boolean swing) {
         EnumFacing side = getFirstFacing(pos);
 
         if (side == null) return false;
@@ -61,9 +62,20 @@ public class BlockUtil implements Globals {
         }
 
         rightClickBlock(neighbour, hitVec, hand, opposite, packet);
-        mc.player.swingArm(EnumHand.MAIN_HAND);
+        if (swing) mc.player.swingArm(EnumHand.MAIN_HAND);
         mc.rightClickDelayTimer = 4; //?
         return true;
+    }
+
+    public static BlockPos getDoubleChestIfDouble(BlockPos ogChestPos) {
+        for (EnumFacing facing : EnumFacing.values()) {
+            if (facing.equals(EnumFacing.UP) || facing.equals(EnumFacing.DOWN)) continue;
+            BlockPos neighbor = ogChestPos.offset(facing);
+            if (BlockUtil.getBlock(neighbor) instanceof BlockChest) {
+                return neighbor;
+            }
+        }
+        return null;
     }
 
     public static void rightClickBlock(BlockPos pos, Vec3d vec, EnumHand hand, EnumFacing direction, boolean packet) {

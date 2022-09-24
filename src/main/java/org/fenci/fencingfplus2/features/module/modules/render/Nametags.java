@@ -16,7 +16,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.fenci.fencingfplus2.features.module.Category;
 import org.fenci.fencingfplus2.features.module.Module;
 import org.fenci.fencingfplus2.setting.Setting;
 import org.fenci.fencingfplus2.util.client.MathUtil;
@@ -27,14 +26,9 @@ import org.lwjgl.opengl.GL11;
 import java.awt.*;
 import java.util.Objects;
 
+import static org.fenci.fencingfplus2.util.render.ColorUtil.getHealthColor;
+
 public class Nametags extends Module {
-
-    public static Nametags INSTANCE;
-
-    public Nametags() {
-        super("Nametags", "Shows player information above their heads", Category.Render);
-        INSTANCE = this;
-    }
 
     public static final Setting<Float> size = new Setting<>("Size", 2f, 0.1, 10);
     public static final Setting<Boolean> health = new Setting<>("HP", true);
@@ -43,7 +37,13 @@ public class Nametags extends Module {
     public static final Setting<Boolean> ping = new Setting<>("ping", true);
     public static final Setting<Boolean> gameMode = new Setting<>("GameMode", false);
     public static final Setting<Boolean> rainbowOutline = new Setting<>("RainbowOutline", false);
+    public static Nametags INSTANCE;
 
+    public Nametags() {
+        super("Nametags", "Shows player information above their heads", Category.Render);
+        INSTANCE = this;
+    }
+//very cool
     @SubscribeEvent
     public void onWorldRender(RenderWorldLastEvent event) {
         if (!fullNullCheck()) return;
@@ -60,12 +60,6 @@ public class Nametags extends Module {
         }
     }
 
-    private int getHealthColor(final Entity entity) {
-        final int scale = (int)Math.round(255.0 - ((EntityLivingBase)entity).getHealth() * 255.0 / ((EntityLivingBase)entity).getMaxHealth());
-        final int damageColor = 255 - scale << 8 | scale << 16;
-        return 0xFF000000 | damageColor;
-    }
-
     private void renderNametag(final EntityPlayer player, final double x, final double y, final double z) {
         GL11.glPushMatrix();
         String name = (getFencing().friendManager.isFriend(player.getUniqueID()) ? ChatFormatting.AQUA : ChatFormatting.WHITE) + player.getName();
@@ -79,7 +73,7 @@ public class Nametags extends Module {
             name = name + " §r" + MathHelper.ceil(player.getHealth() + player.getAbsorptionAmount());
         }
         final float var14 = 0.016666668f * this.getNametagSize(player);
-        GL11.glTranslated((float)x, (float)y + 2.5, (float)z);
+        GL11.glTranslated((float) x, (float) y + 2.5, (float) z);
         GL11.glNormal3f(0.0f, 1.0f, 0.0f);
         GL11.glRotatef(-mc.getRenderManager().playerViewY, 0.0f, 1.0f, 0.0f);
         GL11.glRotatef(mc.getRenderManager().playerViewX, 1.0f, 0.0f, 0.0f);
@@ -90,15 +84,14 @@ public class Nametags extends Module {
         Color c;
         if (rainbowOutline.getValue()) {
             c = ColorUtil.releasedDynamicRainbow(0, 255f, 255f);
-        }
-        else {
+        } else {
             c = new Color(0, 0, 0, 140);
         }
         final int width = RenderUtil.getStringWidth(name) / 2;
 
         RenderUtil.drawBorderedRect(-width - 3, 8.0, width + 2, 20.0, 1.2, 1962934272, c.getRGB());
 
-        mc.fontRenderer.drawStringWithShadow(name, (float)(-width), 10.0f, this.getHealthColor(player));
+        mc.fontRenderer.drawStringWithShadow(name, (float) (-width), 10.0f, getHealthColor(player));
 
         int xOffset = 0;
         for (final ItemStack armourStack : player.inventory.armorInventory) {
@@ -112,7 +105,7 @@ public class Nametags extends Module {
         this.renderItem(renderStack, xOffset, -10);
         xOffset += 16;
         for (int index = 3; index >= 0; --index) {
-            final ItemStack armourStack2 = (ItemStack)player.inventory.armorInventory.get(index);
+            final ItemStack armourStack2 = player.inventory.armorInventory.get(index);
             final ItemStack renderStack2 = armourStack2.copy();
             this.renderItem(renderStack2, xOffset, -10);
             xOffset += 16;
@@ -132,7 +125,7 @@ public class Nametags extends Module {
     private float getNametagSize(final EntityLivingBase player) {
         final ScaledResolution scaledRes = new ScaledResolution(Nametags.mc);
         final double twoDscale = scaledRes.getScaleFactor() / Math.pow(scaledRes.getScaleFactor(), 0.0 + size.getValue());
-        return (float)twoDscale + Nametags.mc.player.getDistance(player) / 5.6f;
+        return (float) twoDscale + Nametags.mc.player.getDistance(player) / 5.6f;
     }
 
     public String getGMText(final EntityPlayer player) {
@@ -180,8 +173,8 @@ public class Nametags extends Module {
         int ping = 0;
         try {
             ping = (int) MathUtil.clamp((float) Objects.requireNonNull(mc.getConnection()).getPlayerInfo(player.getUniqueID()).getResponseTime(), 1.0f, 300.0f);
+        } catch (NullPointerException ex) {
         }
-        catch (NullPointerException ex) {}
         return ping;
     }
 
@@ -189,12 +182,12 @@ public class Nametags extends Module {
         int encY = y - 24;
         int yCount = encY + 5;
         if (stack.getItem() instanceof ItemArmor || stack.getItem() instanceof ItemTool) {
-            final float green = (stack.getMaxDamage() - (float)stack.getItemDamage()) / stack.getMaxDamage();
+            final float green = (stack.getMaxDamage() - (float) stack.getItemDamage()) / stack.getMaxDamage();
             final float red = 1.0f - green;
-            final int dmg = 100 - (int)(red * 100.0f);
+            final int dmg = 100 - (int) (red * 100.0f);
             assert red <= 255;
             assert green <= 255;
-            RenderUtil.drawStringWithShadow(dmg + "%", x * 2 + 8, y + 26, new Color((int)(red * 255.0f), (int)(green * 255.0f), 0).getRGB());
+            RenderUtil.drawStringWithShadow(dmg + "%", x * 2 + 8, y + 26, new Color((int) (red * 255.0f), (int) (green * 255.0f), 0).getRGB());
         }
         final NBTTagList enchants = stack.getEnchantmentTagList();
         for (int index = 0; index < enchants.tagCount(); ++index) {

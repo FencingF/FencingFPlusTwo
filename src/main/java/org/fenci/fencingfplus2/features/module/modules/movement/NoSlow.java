@@ -11,20 +11,11 @@ import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.fenci.fencingfplus2.events.network.PacketEvent;
-import org.fenci.fencingfplus2.features.module.Category;
 import org.fenci.fencingfplus2.features.module.Module;
 import org.fenci.fencingfplus2.setting.Setting;
-import org.fenci.fencingfplus2.util.Globals;
 import org.lwjgl.input.Keyboard;
 
 public class NoSlow extends Module {
-
-    public static NoSlow INSTANCE;
-
-    public NoSlow() {
-        super("NoSlow", "Allows you to do stuff without slowing down", Category.Movement);
-        INSTANCE = this;
-    }
 
     public static final Setting<Boolean> items = new Setting<>("Items", true);
     // blocks
@@ -34,9 +25,21 @@ public class NoSlow extends Module {
     public static final Setting<Boolean> webs = new Setting<>("Webs", true);
     public static final Setting<Integer> lookSpeed = new Setting<>("LookSpeed", 5, 0, 10);
     // anti-cheat
-    public static final Setting<Bypass> bypass = new Setting<>("Bypass", Bypass.NCP);
+    public static final Setting<Bypass> bypass = new Setting<>("Bypass", Bypass.FencingF);
     public static final Setting<Boolean> inventoryMoveBypass = new Setting<>("InvMoveBypass", false);
+    public static NoSlow INSTANCE;
+    public static KeyBinding[] KEYS;
+
+    static {
+        KEYS = new KeyBinding[]{mc.gameSettings.keyBindForward, mc.gameSettings.keyBindRight, mc.gameSettings.keyBindBack, mc.gameSettings.keyBindLeft, mc.gameSettings.keyBindJump, mc.gameSettings.keyBindSprint};
+    }
+
     private boolean sneaking = false;
+
+    public NoSlow() {
+        super("NoSlow", "Allows you to do stuff without slowing down", Category.Movement);
+        INSTANCE = this;
+    }
 
     @Override
     public String getDisplayInfo() {
@@ -47,15 +50,15 @@ public class NoSlow extends Module {
     public void onDisable() {
         if (fullNullCheck() && sneaking) {
             sneaking = false;
-            Globals.mc.player.connection.sendPacket(new CPacketEntityAction(Globals.mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
+            mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
         }
     }
 
     @Override
     public void onUpdate() {
-        if (sneaking && !Globals.mc.player.isHandActive() && !mc.player.isElytraFlying()) {
+        if (sneaking && !mc.player.isHandActive() && !mc.player.isElytraFlying()) {
             sneaking = false;
-            Globals.mc.player.connection.sendPacket(new CPacketEntityAction(Globals.mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
+            mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SNEAKING));
         }
 
         if (inventory.getValue() && !(mc.currentScreen instanceof GuiChat) && !(mc.currentScreen instanceof GuiScreenBook) && AutoWalk.INSTANCE.isOff()) {
@@ -83,23 +86,18 @@ public class NoSlow extends Module {
             }
         }
     }
-    public static KeyBinding[] KEYS;
-
-    static {
-        KEYS = new KeyBinding[] { mc.gameSettings.keyBindForward, mc.gameSettings.keyBindRight, mc.gameSettings.keyBindBack, mc.gameSettings.keyBindLeft, mc.gameSettings.keyBindJump, mc.gameSettings.keyBindSprint };
-    }
 
     @SubscribeEvent
     public void onEntityItemUse(LivingEntityUseItemEvent event) {
         if (mc.player.isElytraFlying() || !fullNullCheck()) return;
-        if (event.getEntity() == Globals.mc.player && items.getValue()) {
+        if (event.getEntity() == mc.player && items.getValue()) {
             if (bypass.getValue() == Bypass.Sneak) {
                 if (!sneaking) {
                     sneaking = true;
-                    Globals.mc.player.connection.sendPacket(new CPacketEntityAction(Globals.mc.player, CPacketEntityAction.Action.START_SNEAKING));
+                    mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.START_SNEAKING));
                 }
             } else if (bypass.getValue() == Bypass.FencingF && !mc.player.isElytraFlying()) {
-                Globals.mc.player.connection.sendPacket(new CPacketHeldItemChange(Globals.mc.player.inventory.currentItem)); // lmao nice
+                mc.player.connection.sendPacket(new CPacketHeldItemChange(mc.player.inventory.currentItem)); // lmao nice
             }
         }
     }
@@ -109,11 +107,11 @@ public class NoSlow extends Module {
         if (!fullNullCheck()) return;
         if (event.getPacket() instanceof CPacketClickWindow) {
             if (inventoryMoveBypass.getValue()) {
-                Globals.mc.player.connection.sendPacket(new CPacketEntityAction(Globals.mc.player, CPacketEntityAction.Action.STOP_SPRINTING)); // nice
+                mc.player.connection.sendPacket(new CPacketEntityAction(mc.player, CPacketEntityAction.Action.STOP_SPRINTING)); // nice
             }
         } else if (event.getPacket() instanceof CPacketPlayer) {
             if (bypass.getValue() == Bypass.NCP) {
-                Globals.mc.player.connection.sendPacket(new CPacketPlayerDigging(CPacketPlayerDigging.Action.ABORT_DESTROY_BLOCK, Globals.mc.player.getPosition(), EnumFacing.DOWN));
+                mc.player.connection.sendPacket(new CPacketPlayerDigging(CPacketPlayerDigging.Action.ABORT_DESTROY_BLOCK, mc.player.getPosition(), EnumFacing.DOWN));
             }
         }
     }
@@ -141,7 +139,7 @@ public class NoSlow extends Module {
 
         /**
          * The infamous FencingFPlus2+2 NoSlow bypass
-         * Skidded into Konass, RusherHack, Future, and every paid client under the sun
+         * Skidded into Konas, RusherHack, Future, and every paid client under the sun
          */
         FencingF
     }

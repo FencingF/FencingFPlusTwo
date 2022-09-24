@@ -10,7 +10,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = EntityLivingBase.class, priority = Integer.MAX_VALUE)
 public abstract class MixinEntityLivingBase extends MixinEntity {
-
     @Inject(method = "travel", at = @At("HEAD"), cancellable = true)
     public void onTravel(float strafe, float vertical, float forward, CallbackInfo ci) {
         ElytraEvent event = new ElytraEvent((EntityLivingBase) (Object) this);

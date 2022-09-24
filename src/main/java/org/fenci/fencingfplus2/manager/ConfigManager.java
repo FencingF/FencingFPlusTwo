@@ -1,20 +1,34 @@
 package org.fenci.fencingfplus2.manager;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import org.fenci.fencingfplus2.util.player.PlayerUtil;
+import org.json.simple.parser.JSONParser;
 import org.fenci.fencingfplus2.FencingFPlus2;
 import org.fenci.fencingfplus2.features.module.Module;
+import org.fenci.fencingfplus2.features.module.modules.misc.FakePlayer;
+import org.fenci.fencingfplus2.manager.friend.Friend;
 import org.fenci.fencingfplus2.setting.Setting;
+import org.fenci.fencingfplus2.util.Globals;
 import org.fenci.fencingfplus2.util.client.EnumConverter;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 import org.lwjgl.input.Keyboard;
 
-import java.io.File;
-import java.io.FileWriter;
+import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class ConfigManager {
+public class ConfigManager implements Globals {
     public File FencingFPlusTwo;
     public File Settings;
     public File Other;
@@ -39,8 +53,19 @@ public class ConfigManager {
             this.Friends.mkdirs();
         }
         load();
-        //loadFriends();
+        //loadFriendsFromJSON();
+        loadFriends();
         loadPrefix();
+    }
+
+    public void prepare() {
+        Runtime.getRuntime().addShutdownHook(new SaveThread());
+        if (mc.hasCrashed) {
+            save();
+            savePrefix();
+            saveFriends();
+            FakePlayer.INSTANCE.setToggled(false);
+        }
     }
 
     public void savePrefix() {
@@ -57,7 +82,8 @@ public class ConfigManager {
             fileWriter.flush();
             fileWriter.close();
 
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
     }
 
     public void loadPrefix() {
@@ -75,38 +101,68 @@ public class ConfigManager {
 
     }
 
+    public void saveKits() {
+        try {
 
-//    public void saveFriends() {
-//        try {
-//            File friendFile = new File(FencingFPlusTwo.getAbsolutePath(), "Other/" + "Friends" + ".json");
-//            friendFile.mkdirs();
-//            if (!friendFile.exists()) {
-//                friendFile.createNewFile();
-//            }
-//            JsonObject object = new JsonObject();
-//            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-//            object.addProperty("friends", gson.toJson(FencingFPlus2.INSTANCE.friendManager.getFriends()));
-//            FileWriter fileWriter = new FileWriter(friendFile);
-//            fileWriter.write(object.toString());
-//            fileWriter.flush();
-//            fileWriter.close();
-//        } catch (Exception e) {
-//        }
-//    }
-//    public void loadFriends() {
-//        try {
-//            File friendFile = new File(FencingFPlusTwo.getAbsolutePath(), "Other/" + "Friends" + ".json");
-//            friendFile.getParentFile().mkdirs();
-//            if (!friendFile.exists()) friendFile.createNewFile();
-//            JsonObject object = new JsonParser().parse(content).getAsJsonObject();
-//            Reader reader = Files.newBufferedReader(Paths.get(friendFile));
-//            FencingFPlus2.INSTANCE.friendManager.setFriends(gson.fromJson(reader, new TypeToken<ArrayList<Friend>>(){}.getType()));
-//
-//            reader.close();
-//        } catch (Exception e) {
-//        }
-//    }
+        } catch (Exception ignored) {}
+    }
 
+    public void saveFriends() {
+        JSONObject jo = new JSONObject();
+
+        String friends = buildFriendString().toString();
+
+        jo.put("FriendNames", friends);
+           /* if (preset.presetDir != null) {
+                jo.put("Presets", preset.presetDir);
+            }*/
+        try {
+            FileWriter file = new FileWriter("FencingF+2/Other/SavedFriends.json");
+            file.write(jo.toJSONString());
+            file.close();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    public StringBuilder buildFriendString() {
+        StringBuilder sb = new StringBuilder();
+        for (Friend friend : getFencing().friendManager.getFriends()) {
+            if (friend.getAlias().equals("") || friend.getAlias().equals(" ")) continue;
+            sb.append(friend.getAlias()).append("&");
+        }
+        return sb;
+    }
+
+    public List<String> parseFriendString(String data) {
+        return Arrays.asList(data.split("&"));
+    }
+
+    public void loadFriends() {
+        try {
+            BufferedReader br = new BufferedReader(new FileReader("FencingF+2/Other/SavedFriends.json"));
+            String line;
+            StringBuilder sbuilderObj = new StringBuilder();
+            while ((line = br.readLine()) != null) {
+                sbuilderObj.append(line);
+            }
+
+            JsonObject gsonObj = new Gson().fromJson(sbuilderObj.toString(), JsonObject.class);
+
+            String friendNames = gsonObj.get("FriendNames").getAsString();
+            FencingFPlus2.LOGGER.info("Player String " + friendNames);
+
+            for (String friend : parseFriendString(friendNames)) {
+                UUID uuid = PlayerUtil.getUUIDFromName(friend);
+                FencingFPlus2.LOGGER.info("Player UUID, and Name " + uuid + " " + friend);
+                Friend friendToAdd = new Friend(uuid, friend);
+                FencingFPlus2.INSTANCE.friendManager.addNoEvent(friendToAdd);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
 
     public void save() {
         try {
@@ -166,6 +222,28 @@ public class ConfigManager {
                 }
             } catch (Exception e) {
             }
+        }
+    }
+
+    public boolean hasRan() throws IOException {
+        String FILE_NAME = "FencingF+2/Other/HasRan.txt";
+        if (new File(FILE_NAME).isFile()) {
+            return true;
+        } else {
+            Path newFilePath = Paths.get(FILE_NAME);
+            Files.createFile(newFilePath);
+            return false;
+        }
+    }
+
+    public static class SaveThread extends Thread {
+        @Override
+        public void run() {
+            FencingFPlus2.INSTANCE.configManager.save();
+            FencingFPlus2.INSTANCE.configManager.savePrefix();
+            FencingFPlus2.INSTANCE.configManager.saveFriends();
+            //FencingFPlus2.INSTANCE.configManager.saveFriendsToJSON();
+            FakePlayer.INSTANCE.setToggled(false);
         }
     }
 }

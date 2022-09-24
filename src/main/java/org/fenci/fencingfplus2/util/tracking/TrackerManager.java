@@ -6,7 +6,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.fenci.fencingfplus2.events.network.PacketEvent;
-import org.fenci.fencingfplus2.features.module.Category;
 import org.fenci.fencingfplus2.features.module.Module;
 import org.fenci.fencingfplus2.util.client.ClientMessage;
 
@@ -14,19 +13,18 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 
 public class TrackerManager extends Module {
-    public TrackerManager() {
-        super("AutoJumpTrack", "Tracks your movements", Category.Movement);
-        this.player_trackers = new ArrayList <>();
-        this.outgoing_packets = new ArrayDeque<>();
-        this.incoming_packets = new ArrayList<>();
-    }
-
-    public ArrayList<Tracker> player_trackers;
     // Lists of incoming and outgoing packets sent by Trackers
     private final ArrayDeque<TrackerRequest> outgoing_packets;
     private final ArrayList<TrackerRequest> incoming_packets;
-
     private final int USER_PACKETS = 2;
+    public ArrayList<Tracker> player_trackers;
+
+    public TrackerManager() {
+        super("AutoJumpTrack", "Tracks your movements", Category.Movement);
+        this.player_trackers = new ArrayList<>();
+        this.outgoing_packets = new ArrayDeque<>();
+        this.incoming_packets = new ArrayList<>();
+    }
 
     // Initialize and add a new Tracker
     public void addNewTracker(int X, int Z) {
@@ -59,8 +57,8 @@ public class TrackerManager extends Module {
 //        System.out.println("There are " + Integer.toString(player_trackers.size()) + " active Trackers.");
 
         // Uses an arraylist to remember what to remove. remove() is async.
-        ArrayList<Tracker> trackers_to_remove = new ArrayList <>();
-        for (Tracker follower : player_trackers){
+        ArrayList<Tracker> trackers_to_remove = new ArrayList<>();
+        for (Tracker follower : player_trackers) {
             // Only does anything if all requests were computed on.
             follower.update();
             // Only does anything if all requests got a response.
@@ -82,7 +80,7 @@ public class TrackerManager extends Module {
 
         // We can send (10 - packets_in_use) packets per tick.
         int packets_available = 10 - USER_PACKETS;
-        for (int i=0; i < packets_available; i++){
+        for (int i = 0; i < packets_available; i++) {
             // No requests, do nothing.
             if (outgoing_packets.isEmpty())
                 break;
@@ -100,7 +98,7 @@ public class TrackerManager extends Module {
 
         /* If 1 second has passed, mark the request as unloaded and remove it from the list.
            The purpose of the second arraylist is to remove packets, due to remove() being async */
-        ArrayList<TrackerRequest> packets_to_remove = new ArrayList <>();
+        ArrayList<TrackerRequest> packets_to_remove = new ArrayList<>();
         for (TrackerRequest request : incoming_packets) {
             // If a chunk got no response for 1000 milliseconds,
             boolean chunk_unloaded = request.timeout(1000);
@@ -135,7 +133,7 @@ public class TrackerManager extends Module {
 
             // For every request, if that request matches this event,
             // set its result to loaded and remove it from the list.
-            ArrayList<TrackerRequest> packets_to_remove = new ArrayList <>();
+            ArrayList<TrackerRequest> packets_to_remove = new ArrayList<>();
             for (TrackerRequest request : incoming_packets) {
                 int REQ_X = request.getPosition().getX();
                 int REQ_Z = request.getPosition().getZ();

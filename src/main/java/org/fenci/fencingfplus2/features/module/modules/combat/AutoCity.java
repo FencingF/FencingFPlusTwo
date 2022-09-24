@@ -10,7 +10,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.fenci.fencingfplus2.features.module.Category;
 import org.fenci.fencingfplus2.features.module.Module;
 import org.fenci.fencingfplus2.setting.Setting;
 import org.fenci.fencingfplus2.util.client.ClientMessage;
@@ -26,19 +25,12 @@ import java.awt.*;
 import static org.fenci.fencingfplus2.util.world.CityUtil.cityBlockToMine;
 
 public class AutoCity extends Module {
-    public static AutoCity INSTANCE;
-
-    public AutoCity() {
-        super("AutoCity", "Automatically cities people", Category.Combat);
-        INSTANCE = this;
-    }
-
     public static final Setting<Integer> range = new Setting<>("Range", 5, 1, 10);
     public static final Setting<Boolean> render = new Setting<>("Render", true);
     //public static final Setting<Boolean> abortOnSwitch = new Setting<>("AbortOnSwitch", true);
     public static final Setting<MineMode> mineMode = new Setting<>("MineMode", MineMode.Normal);
     public static final Setting<Switch> switchSetting = new Setting<>("Switch", Switch.Normal);
-
+    public static AutoCity INSTANCE;
     BlockPos posToMine;
     IBlockState currentBlockState;
     boolean sendSecondPacket;
@@ -47,6 +39,12 @@ public class AutoCity extends Module {
     int oldSlot;
     boolean readyToSwitchBack;
     boolean readyToToggle;
+    float breakTime;
+
+    public AutoCity() {
+        super("AutoCity", "Automatically cities people", Category.Combat);
+        INSTANCE = this;
+    }
 
     @Override
     public void onEnable() {
@@ -121,8 +119,6 @@ public class AutoCity extends Module {
             switchBackDelay.reset();
         }
     }
-
-    float breakTime;
 
     public float getBreakTime() {
         this.currentBlockState = mc.world.getBlockState(posToMine);

@@ -81,7 +81,7 @@ public class PopChamsUtil implements Globals {
         return prevYawOffset + partialTicks * f;
     }
 
-        public static Color newAlpha(Color color, int alpha) {
+    public static Color newAlpha(Color color, int alpha) {
         return new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
     }
 

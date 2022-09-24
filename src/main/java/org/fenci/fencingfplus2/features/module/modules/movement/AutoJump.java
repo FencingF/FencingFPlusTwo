@@ -14,7 +14,6 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.fenci.fencingfplus2.events.network.PacketEvent;
-import org.fenci.fencingfplus2.features.module.Category;
 import org.fenci.fencingfplus2.features.module.Module;
 import org.fenci.fencingfplus2.setting.Setting;
 import org.fenci.fencingfplus2.util.client.ClientMessage;
@@ -42,6 +41,7 @@ public class AutoJump extends Module { //i temporarily changed the setting names
     long spiralZ;
     long steps;
     int ystage;
+
     public AutoJump() {
         super("AutoJump", "Auto jumps", Category.Movement);
         INSTANCE = this;

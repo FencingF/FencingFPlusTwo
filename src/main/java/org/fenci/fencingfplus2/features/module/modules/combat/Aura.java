@@ -11,7 +11,6 @@ import net.minecraft.network.play.client.CPacketPlayer;
 import net.minecraft.util.EnumHand;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.fenci.fencingfplus2.events.network.PacketEvent;
-import org.fenci.fencingfplus2.features.module.Category;
 import org.fenci.fencingfplus2.features.module.Module;
 import org.fenci.fencingfplus2.setting.Setting;
 import org.fenci.fencingfplus2.util.client.MathUtil;
@@ -22,10 +21,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Aura extends Module {
-    public Aura() {
-        super("Aura", "Automatically hits people with your sword", Category.Combat);
-    }
-
     public static final Setting<Boolean> weaponsCheck = new Setting<>("WeaponsCheck", true);
     public static final Setting<Boolean> delay = new Setting<>("Delay", true);
     public static final Setting<Boolean> players = new Setting<>("Players", true);
@@ -35,10 +30,14 @@ public class Aura extends Module {
     public static final Setting<Switch> switchSetting = new Setting<>("Switch", Switch.Normal);
     public static final Setting<Integer> range = new Setting<>("Range", 4, 1, 10);
     public static final Setting<OnDisableSwitch> onDisableSwitch = new Setting<>("OnDisableSwitch", OnDisableSwitch.None);
+    boolean isRotating;
     private Item disableItem;
     private float pitch = 0.0f;
     private float yaw = 0.0f;
-    boolean isRotating;
+
+    public Aura() {
+        super("Aura", "Automatically hits people with your sword", Category.Combat);
+    }
 
     @Override
     public void onUpdate() {

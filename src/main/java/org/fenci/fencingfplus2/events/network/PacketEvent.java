@@ -4,6 +4,8 @@ import net.minecraft.network.Packet;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
+
+// PacketEvent is a class that extends Event and is used to help with some modules that send packets.
 @Cancelable
 public class PacketEvent extends Event {
     private final Packet<?> packet;

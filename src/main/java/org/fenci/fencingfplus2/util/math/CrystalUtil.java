@@ -65,17 +65,18 @@ public class CrystalUtil implements Globals {
             if (!specialEntityCheck) {
                 return mc.world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(boost)).isEmpty() && mc.world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(boost2)).isEmpty();
             }
-            for (final Object entity : mc.world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(boost))) {
+
+            for (final Entity entity : mc.world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(boost))) {
                 if (!(entity instanceof EntityEnderCrystal)) {
                     return false;
                 }
             }
-            for (final Object entity : mc.world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(boost2))) {
+            for (final Entity entity : mc.world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(boost2))) {
                 if (!(entity instanceof EntityEnderCrystal)) {
                     return false;
                 }
             }
-            for (final Object entity : mc.world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(final_boost))) {
+            for (final Entity entity : mc.world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(final_boost))) {
                 if (entity instanceof EntityEnderCrystal) {
                     return false;
                 }
@@ -135,6 +136,14 @@ public class CrystalUtil implements Globals {
         }
         damage = CombatRules.getDamageAfterAbsorb(damage, (float) entity.getTotalArmorValue(), (float) entity.getEntityAttribute(SharedMonsterAttributes.ARMOR_TOUGHNESS).getAttributeValue());
         return damage;
+    }
+
+    public static boolean isBlockGood(BlockPos potentialPlacePos) {
+        boolean isGood;
+        EntityEnderCrystal posToTest = new EntityEnderCrystal(mc.world, potentialPlacePos.getX(), potentialPlacePos.getY() + 1, potentialPlacePos.getZ()); //If this doesn't work get rid of the + 1
+        List<EntityEnderCrystal> crystalsBlocking = new ArrayList<>(mc.world.getEntitiesWithinAABB(EntityEnderCrystal.class, new AxisAlignedBB(posToTest.boundingBox.minX, posToTest.boundingBox.minY, posToTest.boundingBox.minZ, posToTest.boundingBox.maxX, posToTest.boundingBox.maxY, posToTest.boundingBox.maxZ)));
+        isGood = crystalsBlocking.size() <= 1;
+        return isGood;
     }
 
     public static float getDamageMultiplied(final float damage) {

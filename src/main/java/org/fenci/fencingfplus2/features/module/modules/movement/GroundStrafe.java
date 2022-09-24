@@ -2,32 +2,30 @@ package org.fenci.fencingfplus2.features.module.modules.movement;
 
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.fenci.fencingfplus2.events.player.MoveEvent;
-import org.fenci.fencingfplus2.features.module.Category;
 import org.fenci.fencingfplus2.features.module.Module;
 import org.fenci.fencingfplus2.setting.Setting;
 import org.fenci.fencingfplus2.util.player.PlayerUtil;
 
 public class GroundStrafe extends Module {
 
+    public static final Setting<Mode> mode = new Setting<>("Mode", Mode.New);
+    public static final Setting<Double> speed = new Setting<>("Speed", 0.4, 0, 5);
+    public static final Setting<Boolean> useTimer = new Setting<>("UseTimer", true);
+    public static final Setting<Boolean> onGroundOnly = new Setting<>("OnGroundOnly", false);
+    public static final Setting<Boolean> noLiquid = new Setting<>("NoLiquid", true);
     public static GroundStrafe INSTANCE;
+    double playerSpeed;
+    //public static final Setting<Boolean> smartEnable = new Setting<>("EnableOnStairs", false); //TODO: FIX THIS
 
     public GroundStrafe() {
         super("GroundStrafe", "Zooooooooooom", Category.Movement);
         INSTANCE = this;
     }
 
-    public static final Setting<Mode> mode = new Setting<>("Mode", Mode.New);
-    public static final Setting<Double> speed = new Setting<>("Speed", 0.4, 0, 5);
-    public static final Setting<Boolean> useTimer = new Setting<>("UseTimer", true);
-    public static final Setting<Boolean> onGroundOnly = new Setting<>("OnGroundOnly", false);
-    public static final Setting<Boolean> noLiquid = new Setting<>("NoLiquid", true);
-    //public static final Setting<Boolean> smartEnable = new Setting<>("EnableOnStairs", false); //TODO: FIX THIS
-
-    double playerSpeed;
-
     @SubscribeEvent
     public void onMove(MoveEvent event) {
-        if ((noLiquid.getValue() && mc.player.isInLava() || mc.player.isInWater()) || mc.player.isElytraFlying()) return;
+        if ((noLiquid.getValue() && mc.player.isInLava() || mc.player.isInWater()) || mc.player.isElytraFlying())
+            return;
         if (mode.getValue().equals(Mode.Old)) {
             playerSpeed = speed.getValue();
 

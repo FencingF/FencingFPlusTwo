@@ -3,7 +3,6 @@ package org.fenci.fencingfplus2.features.module.modules.misc;
 import net.minecraft.network.play.client.CPacketCloseWindow;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.fenci.fencingfplus2.events.network.PacketEvent;
-import org.fenci.fencingfplus2.features.module.Category;
 import org.fenci.fencingfplus2.features.module.Module;
 
 public class XCarry extends Module {

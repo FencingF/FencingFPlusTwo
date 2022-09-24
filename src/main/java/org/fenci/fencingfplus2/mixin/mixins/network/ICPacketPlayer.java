@@ -20,10 +20,10 @@ public interface ICPacketPlayer {
     void setPitch(float pitch);
 
     @Accessor(value = "y")
-    void setY(double y);
+    double getY();
 
     @Accessor(value = "y")
-    double getY();
+    void setY(double y);
 
     @Accessor(value = "onGround")
     void setOnGround(boolean onGround);

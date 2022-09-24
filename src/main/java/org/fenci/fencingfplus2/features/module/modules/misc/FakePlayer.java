@@ -20,7 +20,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Explosion;
-import org.fenci.fencingfplus2.features.module.Category;
 import org.fenci.fencingfplus2.features.module.Module;
 import org.fenci.fencingfplus2.setting.Setting;
 import org.fenci.fencingfplus2.util.client.Timer;
@@ -33,100 +32,22 @@ public class FakePlayer extends Module {
 
 
     public static final Setting<Boolean> pops = new Setting<>("Totem Pop", true);
-//    public static final Setting<Boolean> move = new Setting<>("Move", false);
+    //    public static final Setting<Boolean> move = new Setting<>("Move", false);
 //    public static final Setting<Float> moveSpeed = new Setting<>("MoveSpeed", 1f, 0.1f, 10f);
 //    public static final Setting<Boolean> record = new Setting<>("Record", false);
 //    public static final Setting<Boolean> playRecording = new Setting<>("Play Recording", false);
 //    public static final Setting<Boolean> resetRecording = new Setting<>("Reset Recording", false);
     public static FakePlayer INSTANCE;
     public EntityOtherPlayerMP fakePlayer;
+    public List<Location> playerLocations = new ArrayList<>();
     BlockPos startPos;
+    Timer delayTimer = new Timer();
+    List<BlockPos> positions = new ArrayList<>();
 
     public FakePlayer() {
         super("FakePlayer", "Makes a clientside player", Category.Misc);
         INSTANCE = this;
     }
-
-    Timer delayTimer = new Timer();
-    public List<Location> playerLocations = new ArrayList<>();
-
-    @Override
-    public void onEnable() {
-        if (mc.player == null || mc.player.isDead) {
-            this.toggle(true);
-            return;
-        }
-
-        GameProfile profile = new GameProfile(UUID.fromString("87f6fc57-7032-4977-997e-53a075ef8000"), "TheInfInventor");
-        fakePlayer = new EntityOtherPlayerMP(FakePlayer.mc.world, profile);
-        fakePlayer.copyLocationAndAnglesFrom(FakePlayer.mc.player);
-        fakePlayer.rotationYawHead = FakePlayer.mc.player.rotationYawHead;
-        fakePlayer.inventory.copyInventory(FakePlayer.mc.player.inventory);
-        startPos = mc.player.getPosition();
-        mc.world.addEntityToWorld(-1234, fakePlayer);
-    }
-
-    List<BlockPos> positions = new ArrayList<>();
-
-    @Override
-    public void onUpdate() {
-        if (fakePlayer.isDead) fakePlayer.respawnPlayer();
-        if (pops.getValue()) {
-            fakePlayer.setHeldItem(EnumHand.OFF_HAND, new ItemStack(Items.TOTEM_OF_UNDYING));
-            if (fakePlayer.getHealth() <= 0) {
-                fakePop(fakePlayer);
-                fakePlayer.setHealth(20);
-            }
-
-        }
-//        if (!move.getValue()) return;
-//
-//        if (resetRecording.getValue()) {
-//            positions.clear();
-//            resetRecording.setValue(false);
-//        }
-    }
-
-    @Override
-    public void onDisable() {
-        if (mc.world != null) {
-            mc.world.removeEntityFromWorld(-1234);
-        }
-    }
-
-    private void fakePop(Entity entity) {
-        mc.effectRenderer.emitParticleAtEntity(entity, EnumParticleTypes.TOTEM, 30);
-        mc.world.playSound(entity.posX, entity.posY, entity.posZ, SoundEvents.ITEM_TOTEM_USE, entity.getSoundCategory(), 1.0F, 1.0F, false);
-        fakePlayer.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 900, 1));
-        fakePlayer.addPotionEffect(new PotionEffect(MobEffects.ABSORPTION, 100, 1));
-    }
-
-//    @SubscribeEvent
-//    public void onUpdateWalking(UpdateWalkingPlayerEvent event) {
-//        if (record.getValue()) {
-//            playerLocations.add(new Location(mc.player.getPosition(), mc.player.limbSwing, mc.player.limbSwingAmount, mc.player.prevLimbSwingAmount, mc.player.rotationYawHead, mc.player.prevRotationYawHead));
-//        }
-//        if (playRecording.getValue() && !playerLocations.isEmpty()) {
-//            for (Location location : playerLocations) {
-//                fakePlayer.setPosition(location.getPosition().getX(), location.getPosition().getY(), location.getPosition().getZ());
-//                fakePlayer.limbSwing = location.getLimbSwing();
-//                fakePlayer.limbSwingAmount = location.getLimbSwingAmount();
-//                fakePlayer.prevLimbSwingAmount = location.getPrevLimbSwingAmount();
-//                fakePlayer.rotationYawHead = location.getRotationYawHead();
-//                fakePlayer.prevRotationYawHead = location.getPrevRotationYawHead();
-//            }
-//        }
-//    }
-
-//    @SubscribeEvent
-//    public void onOption(OptionChangeEvent event) {
-//        if (event.getOption().equals(record) && record.getValue()) {
-//            playRecording.setValue(false);
-//        }
-//        if (event.getOption().equals(playRecording) && playRecording.getValue()) {
-//            record.setValue(false);
-//        }
-//    }
 
     public static float calculateDamage(double posX, double posY, double posZ, Entity entity) {
         float doubleSize = 12.0F;
@@ -169,6 +90,82 @@ public class FakePlayer extends Module {
 
     private static float getMultipliedDamage(float damage) {
         return damage * (mc.world.getDifficulty().getId() == 0 ? 0.0F : (mc.world.getDifficulty().getId() == 2 ? 1.0F : (mc.world.getDifficulty().getId() == 1 ? 0.5F : 1.5F)));
+    }
+
+    @Override
+    public void onEnable() {
+        if (mc.player == null || mc.player.isDead) {
+            this.toggle(true);
+            return;
+        }
+
+        GameProfile profile = new GameProfile(UUID.fromString("87f6fc57-7032-4977-997e-53a075ef8000"), mc.player.getName());
+        fakePlayer = new EntityOtherPlayerMP(FakePlayer.mc.world, profile);
+        fakePlayer.copyLocationAndAnglesFrom(FakePlayer.mc.player);
+        fakePlayer.rotationYawHead = FakePlayer.mc.player.rotationYawHead;
+        fakePlayer.inventory.copyInventory(FakePlayer.mc.player.inventory);
+        startPos = mc.player.getPosition();
+        mc.world.addEntityToWorld(-1234, fakePlayer);
+    }
+
+//    @SubscribeEvent
+//    public void onUpdateWalking(UpdateWalkingPlayerEvent event) {
+//        if (record.getValue()) {
+//            playerLocations.add(new Location(mc.player.getPosition(), mc.player.limbSwing, mc.player.limbSwingAmount, mc.player.prevLimbSwingAmount, mc.player.rotationYawHead, mc.player.prevRotationYawHead));
+//        }
+//        if (playRecording.getValue() && !playerLocations.isEmpty()) {
+//            for (Location location : playerLocations) {
+//                fakePlayer.setPosition(location.getPosition().getX(), location.getPosition().getY(), location.getPosition().getZ());
+//                fakePlayer.limbSwing = location.getLimbSwing();
+//                fakePlayer.limbSwingAmount = location.getLimbSwingAmount();
+//                fakePlayer.prevLimbSwingAmount = location.getPrevLimbSwingAmount();
+//                fakePlayer.rotationYawHead = location.getRotationYawHead();
+//                fakePlayer.prevRotationYawHead = location.getPrevRotationYawHead();
+//            }
+//        }
+//    }
+
+//    @SubscribeEvent
+//    public void onOption(OptionChangeEvent event) {
+//        if (event.getOption().equals(record) && record.getValue()) {
+//            playRecording.setValue(false);
+//        }
+//        if (event.getOption().equals(playRecording) && playRecording.getValue()) {
+//            record.setValue(false);
+//        }
+//    }
+
+    @Override
+    public void onUpdate() {
+        if (fakePlayer.isDead) fakePlayer.respawnPlayer();
+        if (pops.getValue()) {
+            fakePlayer.setHeldItem(EnumHand.OFF_HAND, new ItemStack(Items.TOTEM_OF_UNDYING));
+            if (fakePlayer.getHealth() <= 0) {
+                fakePop(fakePlayer);
+                fakePlayer.setHealth(20);
+            }
+
+        }
+//        if (!move.getValue()) return;
+//
+//        if (resetRecording.getValue()) {
+//            positions.clear();
+//            resetRecording.setValue(false);
+//        }
+    }
+
+    @Override
+    public void onDisable() {
+        if (mc.world != null) {
+            mc.world.removeEntityFromWorld(-1234);
+        }
+    }
+
+    private void fakePop(Entity entity) {
+        mc.effectRenderer.emitParticleAtEntity(entity, EnumParticleTypes.TOTEM, 30);
+        mc.world.playSound(entity.posX, entity.posY, entity.posZ, SoundEvents.ITEM_TOTEM_USE, entity.getSoundCategory(), 1.0F, 1.0F, false);
+        fakePlayer.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 900, 1));
+        fakePlayer.addPotionEffect(new PotionEffect(MobEffects.ABSORPTION, 100, 1));
     }
 
     public static class Location {

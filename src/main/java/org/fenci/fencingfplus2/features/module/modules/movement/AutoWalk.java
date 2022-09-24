@@ -1,20 +1,18 @@
 package org.fenci.fencingfplus2.features.module.modules.movement;
 
 import net.minecraft.client.settings.KeyBinding;
-import org.fenci.fencingfplus2.features.module.Category;
 import org.fenci.fencingfplus2.features.module.Module;
 import org.fenci.fencingfplus2.setting.Setting;
 
 public class AutoWalk extends Module {
 
+    public static final Setting<Boolean> sprint = new Setting<>("Sprint", true);
     public static AutoWalk INSTANCE; //LOL
 
     public AutoWalk() {
         super("AutoWalk", "Automatically walks", Category.Movement);
         INSTANCE = this;
     }
-
-    public static final Setting<Boolean> sprint = new Setting<>("Sprint", true);
 
     @Override
     public void onUpdate() {

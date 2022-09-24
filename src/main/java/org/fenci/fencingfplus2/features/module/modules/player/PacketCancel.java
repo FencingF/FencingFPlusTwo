@@ -4,21 +4,20 @@ import net.minecraft.network.play.client.*;
 import net.minecraft.network.play.server.SPacketCloseWindow;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.fenci.fencingfplus2.events.network.PacketEvent;
-import org.fenci.fencingfplus2.features.module.Category;
 import org.fenci.fencingfplus2.features.module.Module;
 import org.fenci.fencingfplus2.setting.Setting;
 
 public class PacketCancel extends Module {
-    public PacketCancel() {
-        super("PacketCancel", "Cancels Packets", Category.Player);
-    }
-
     public static final Setting<Boolean> cPacketInput = new Setting<>("CPacketInput", false);
     public static final Setting<Boolean> cPacketPlayer = new Setting<>("CPacketPlayer", false);
     public static final Setting<Boolean> cPacketEntityAction = new Setting<>("CPacketEntityAction", false);
     public static final Setting<Boolean> cPacketUseEntity = new Setting<>("CPacketUseEntity", false);
     public static final Setting<Boolean> cPacketVehicleMove = new Setting<>("CPacketVehicleMove", false);
     public static final Setting<Boolean> sPacketCloseWindow = new Setting<>("SPacketCloseWindow", false);
+
+    public PacketCancel() {
+        super("PacketCancel", "Cancels Packets", Category.Player);
+    }
 
     @SubscribeEvent
     public void onPacket(PacketEvent.Send event) {

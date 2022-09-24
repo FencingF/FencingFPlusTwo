@@ -14,16 +14,16 @@ public class EventRenderEntity extends Event {
         type = t;
     }
 
-    public enum Type {
-        TEXTURE, COLOR
-    }
-
     public Entity getEntity() {
         return entity;
     }
 
     public Type getType() {
         return type;
+    }
+
+    public enum Type {
+        TEXTURE, COLOR
     }
 
     public static class Head extends EventRenderEntity {

@@ -11,7 +11,9 @@ import net.minecraft.util.math.BlockPos;
 import org.fenci.fencingfplus2.util.Globals;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class HoleUtil implements Globals {
@@ -107,6 +109,31 @@ public class HoleUtil implements Globals {
         positions.addAll(getSphere(mc.player.getPosition(), range, ((int) range), false, true, 0).stream().filter(HoleUtil::isBedrock).collect(Collectors.toList()));
         positions.addAll(getSphere(mc.player.getPosition(), range, ((int) range), false, true, 0).stream().filter(HoleUtil::isObby).collect(Collectors.toList()));
         return positions;
+    }
+
+    public static Set<EntityPlayer> allPlayersNotInHoles() {
+        Set<EntityPlayer> playersNotInHoles = new HashSet<>();
+        for (EntityPlayer player : mc.world.playerEntities) {
+            if (HoleUtil.isInHole(player)) continue;
+            playersNotInHoles.add(player);
+        }
+        return playersNotInHoles;
+    }
+
+    public static Set<BlockPos> allPlayersCloseToHoles(float holeRange, float holeDistanceFromPlayer) {
+        Set<BlockPos> playersCloseToHoles = new HashSet<>();
+        try {
+            for (EntityPlayer player : allPlayersNotInHoles()) {
+                if (!isPlayerCloseToHole(player, holeRange, holeDistanceFromPlayer)) continue;
+                playersCloseToHoles.add(getClosestHole(player, holeRange));
+            }
+        } catch (NullPointerException ignored) {
+        }
+        return playersCloseToHoles;
+    }
+
+    public static boolean isPlayerCloseToHole(EntityPlayer player, float range, float distanceToHole) {
+        return (player.getDistanceSq(getClosestHole(player, range)) <= distanceToHole);
     }
 
     public static BlockPos getClosestHole(EntityPlayer player, float maxDistance) { //set maxDistance to the chunk amount * 16 if you dont want a specific range

@@ -14,21 +14,15 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.fenci.fencingfplus2.FencingFPlus2;
-import org.fenci.fencingfplus2.features.module.Category;
 import org.fenci.fencingfplus2.features.module.Module;
 import org.fenci.fencingfplus2.manager.friend.Friend;
 import org.fenci.fencingfplus2.setting.Setting;
-import org.fenci.fencingfplus2.util.Globals;
 import org.fenci.fencingfplus2.util.client.ClientMessage;
 import org.fenci.fencingfplus2.util.client.Timer;
 import org.fenci.fencingfplus2.util.player.InventoryUtil;
 import org.lwjgl.input.Mouse;
 
 public class MiddleClick extends Module {
-
-    public MiddleClick() {
-        super("MiddleClick", "Allows you to do different functions with middle click", Category.Player);
-    }
 
     public static final Setting<Boolean> pearl = new Setting<>("Pearl", true);
     public static final Setting<Boolean> friend = new Setting<>("Friend", true);
@@ -37,18 +31,21 @@ public class MiddleClick extends Module {
     public static final Setting<Boolean> chatAnnounce = new Setting<>("ChatAnnounce", true);
     public static final Setting<Integer> threshold = new Setting<>("Threshold", 99, 0, 100);
     public static final Setting<Enum> mendMode = new Setting<>("MendMode", MendMode.Never);
-
-    private boolean clicked;
     private final Timer timer = new Timer();
     private final long delay = 50L;
     boolean aBoolean = true;
     float playerDistance;
+    private boolean clicked;
     private boolean mending = true;
+
+    public MiddleClick() {
+        super("MiddleClick", "Allows you to do different functions with middle click", Category.Player);
+    }
 
     @Override
     public void onUpdate() {
         if (Mouse.isButtonDown(2) && (pearl.getValue() || friend.getValue() || exp.getValue())) {
-            Item oldslot = Globals.mc.player.getHeldItemMainhand().getItem();
+            Item oldslot = mc.player.getHeldItemMainhand().getItem();
             if (!this.clicked) {
                 RayTraceResult result;
                 if (friend.getValue() && (result = MiddleClick.mc.objectMouseOver) != null && result.typeOfHit == RayTraceResult.Type.ENTITY) {
@@ -101,7 +98,7 @@ public class MiddleClick extends Module {
                     return;
                 } else if (InventoryUtil.isInHotbar(Items.ENDER_PEARL)) {
                     InventoryUtil.switchTo(Items.ENDER_PEARL);
-                    Globals.mc.playerController.processRightClick(Globals.mc.player, Globals.mc.world, EnumHand.MAIN_HAND);
+                    mc.playerController.processRightClick(mc.player, mc.world, EnumHand.MAIN_HAND);
                     if (chatAnnounce.getValue()) ClientMessage.sendMessage("Throwing Pearl!");
                     InventoryUtil.switchTo(oldslot);
                 }

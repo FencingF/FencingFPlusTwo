@@ -1,16 +1,15 @@
 package org.fenci.fencingfplus2.features.module.modules.client;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.item.ItemStack;
 import org.fenci.fencingfplus2.FencingFPlus2;
-import org.fenci.fencingfplus2.features.module.Category;
 import org.fenci.fencingfplus2.features.module.Module;
 import org.fenci.fencingfplus2.features.module.modules.movement.AutoJump;
 import org.fenci.fencingfplus2.setting.Setting;
-import org.fenci.fencingfplus2.util.Globals;
 import org.fenci.fencingfplus2.util.render.ColorUtil;
 
 import java.awt.*;
@@ -21,8 +20,6 @@ import java.util.stream.Collectors;
 public class HUD extends Module {
     //private static final int TEXT_COLOR = new Color(245, 34, 34).getRGB();
 
-    public static HUD INSTANCE;
-
     public static final Setting<Boolean> watermark = new Setting<>("Watermark", true);
     public static final Setting<Boolean> arrayList = new Setting<>("ArrayList", true);
     public static final Setting<Boolean> armor = new Setting<>("Armor", true);
@@ -30,15 +27,17 @@ public class HUD extends Module {
     //public static final Setting<Boolean> totemCount = new Setting<>("TotemCount", true);
     public static final Setting<Boolean> coords = new Setting<>("Coords", true);
     public static final Setting<Boolean> copyCoords = new Setting<>("CopyCoords", false);
+
+    public static final Setting<Boolean> fps = new Setting<>("FPS", true);
     public static final Setting<Boolean> direction = new Setting<>("Direction", true);
     public static final Setting<Boolean> jumpLength = new Setting<>("JumpLength", false);
-    //public static final Setting<Boolean> fps = new Setting<>("FPS", true);
     //public static final Setting<Boolean> ping = new Setting<>("Ping", true);
 //    public static final Setting<Boolean> entityList = new Setting<>("EntityList", false);
 //    public static final Setting<Boolean> playersOnly = new Setting<>("PlayersOnly", true);
     public static final Setting<BracketColor> bracketColor = new Setting<>("BracketColor", BracketColor.Black);
     public static final Setting<NameColor> nameColor = new Setting<>("NameColor", NameColor.Red);
     private static final RenderItem itemRender = mc.getRenderItem();
+    public static HUD INSTANCE;
     private String direction1;
     private String nesw;
     private int y;
@@ -148,14 +147,17 @@ public class HUD extends Module {
     public void onRender2D() {
         GlStateManager.pushMatrix();
 
-        ScaledResolution resolution = new ScaledResolution(Globals.mc);
+        ScaledResolution resolution = new ScaledResolution(mc);
 
         if (watermark.getValue()) {
-            Globals.mc.fontRenderer.drawStringWithShadow(FencingFPlus2.NAME + " v" + FencingFPlus2.VERSION, 2.0f, 2.0f, TEXT_COLOR());
+            mc.fontRenderer.drawStringWithShadow(FencingFPlus2.NAME + " v" + FencingFPlus2.VERSION, 2.0f, 2.0f, TEXT_COLOR());
         }
 
+        if (fps.getValue()) mc.fontRenderer.drawStringWithShadow("FPS: " + Minecraft.debugFPS, 2.0f, 12.0f, TEXT_COLOR());
+
+
         if (jumpLength.getValue() && AutoJump.INSTANCE.isOn()) {
-            Globals.mc.fontRenderer.drawStringWithShadow(AutoJump.INSTANCE.getClickPos().toString(), 2.0f, 11.0f, TEXT_COLOR());
+            mc.fontRenderer.drawStringWithShadow(AutoJump.INSTANCE.getClickPos().toString(), 2.0f, 11.0f, TEXT_COLOR());
         }
 
         if (coords.getValue()) {
@@ -196,31 +198,31 @@ public class HUD extends Module {
         }
 /*
         if(fps.getValue() && (mc.player != null || mc.world != null)) {
-            Globals.mc.fontRenderer.drawStringWithShadow(("FPS: " + Minecraft.debugFPS), 2.0f, getPingandFPSHeight()[0], TEXT_COLOR());
+            mc.fontRenderer.drawStringWithShadow(("FPS: " + Minecraft.debugFPS), 2.0f, getPingandFPSHeight()[0], TEXT_COLOR());
         }
         if(ping.getValue() && (mc.player != null || mc.world != null)) {
-            Globals.mc.fontRenderer.drawStringWithShadow(("Ping: " + getPing()), 2.0f, getPingandFPSHeight()[1], TEXT_COLOR());
+            mc.fontRenderer.drawStringWithShadow(("Ping: " + getPing()), 2.0f, getPingandFPSHeight()[1], TEXT_COLOR());
         }
         if(entityList.getValue()) {
             if(playersOnly.getValue()) {
                 if(!mc.world.playerEntities.isEmpty()) {
-                    mc.world.playerEntities.sort(Comparator.comparingInt((entityPlayer) -> -Globals.mc.fontRenderer.getStringWidth(entityPlayer.getName())));
+                    mc.world.playerEntities.sort(Comparator.comparingInt((entityPlayer) -> -mc.fontRenderer.getStringWidth(entityPlayer.getName())));
                     float yy = 2.0f;
                     for(EntityPlayer player : mc.world.playerEntities) {
                         String display = player.getName();
-                        Globals.mc.fontRenderer.drawStringWithShadow(display, getEntityListHeight(), yy, TEXT_COLOR());
-                        yy += Globals.mc.fontRenderer.FONT_HEIGHT + 1.5f;
+                        mc.fontRenderer.drawStringWithShadow(display, getEntityListHeight(), yy, TEXT_COLOR());
+                        yy += mc.fontRenderer.FONT_HEIGHT + 1.5f;
                     }
                 }
             }
             if(!playersOnly.getValue()) {
                 if(!mc.world.loadedEntityList.isEmpty()) {
-                    mc.world.loadedEntityList.sort(Comparator.comparingInt((entity) -> -Globals.mc.fontRenderer.getStringWidth(entity.getName())));
+                    mc.world.loadedEntityList.sort(Comparator.comparingInt((entity) -> -mc.fontRenderer.getStringWidth(entity.getName())));
                     float yy = 2.0f;
                     for(Entity entity : mc.world.loadedEntityList) {
                         String display = entity.getName();
-                        Globals.mc.fontRenderer.drawStringWithShadow(display, getEntityListHeight(), yy, TEXT_COLOR());
-                        yy += Globals.mc.fontRenderer.FONT_HEIGHT + 1.5f;
+                        mc.fontRenderer.drawStringWithShadow(display, getEntityListHeight(), yy, TEXT_COLOR());
+                        yy += mc.fontRenderer.FONT_HEIGHT + 1.5f;
                     }
                 }
             }
@@ -280,13 +282,13 @@ public class HUD extends Module {
                     .collect(Collectors.toList());
 
             if (!modules.isEmpty()) {
-                modules.sort(Comparator.comparingInt((mod) -> -Globals.mc.fontRenderer.getStringWidth(mod.getFullDisplay())));
+                modules.sort(Comparator.comparingInt((mod) -> -mc.fontRenderer.getStringWidth(mod.getFullDisplay())));
 
                 float y = 2.0f;
                 for (Module module : modules) {
                     String display = module.getFullDisplay();
-                    Globals.mc.fontRenderer.drawStringWithShadow(display, resolution.getScaledWidth() - Globals.mc.fontRenderer.getStringWidth(display) - 2.0f, y, TEXT_COLOR());
-                    y += Globals.mc.fontRenderer.FONT_HEIGHT + 1.5f;
+                    mc.fontRenderer.drawStringWithShadow(display, resolution.getScaledWidth() - mc.fontRenderer.getStringWidth(display) - 2.0f, y, TEXT_COLOR());
+                    y += mc.fontRenderer.FONT_HEIGHT + 1.5f;
                 }
             }
         }

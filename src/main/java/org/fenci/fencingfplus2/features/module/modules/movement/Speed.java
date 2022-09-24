@@ -4,7 +4,6 @@ import net.minecraft.block.BlockLiquid;
 import net.minecraft.init.MobEffects;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.fenci.fencingfplus2.events.player.MoveEvent;
-import org.fenci.fencingfplus2.features.module.Category;
 import org.fenci.fencingfplus2.features.module.Module;
 import org.fenci.fencingfplus2.setting.Setting;
 import org.fenci.fencingfplus2.util.client.Timer;
@@ -14,21 +13,20 @@ import java.util.Objects;
 
 public class Speed extends Module {
 
+    public static final Setting<Mode> mode = new Setting<>("Mode", Mode.Strafe);
+    public static final Setting<Double> timerSpeed = new Setting<>("TimerSpeed", 1.15, 1.0, 1.5);
+    public static final Setting<Double> jumpHeight = new Setting<>("JumpHeight", 0.41, 0.0, 1.0);
+    public static final Setting<Double> ySpeed = new Setting<>("YSpeed", 0.06, 0.01, 0.15);
     public static Speed INSTANCE;
+    private final Timer timer = new Timer();
+    //public static final Setting<Boolean> useTimer = new Setting<>("UseTimer", true);
+    private boolean slowdown;
+    private double playerSpeed;
 
     public Speed() {
         super("Speed", "Zoom", Category.Movement);
         INSTANCE = this;
     }
-
-    public static final Setting<Mode> mode = new Setting<>("Mode", Mode.Strafe);
-    public static final Setting<Double> timerSpeed = new Setting<>("TimerSpeed", 1.15, 1.0, 1.5);
-    public static final Setting<Double> jumpHeight = new Setting<>("JumpHeight", 0.41, 0.0, 1.0);
-    public static final Setting<Double> ySpeed = new Setting<>("YSpeed", 0.06, 0.01, 0.15);
-    private final Timer timer = new Timer();
-    //public static final Setting<Boolean> useTimer = new Setting<>("UseTimer", true);
-    private boolean slowdown;
-    private double playerSpeed;
 
     @Override
     public String getDisplayInfo() {

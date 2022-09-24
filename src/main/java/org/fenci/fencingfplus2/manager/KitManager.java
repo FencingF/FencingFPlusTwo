@@ -1,6 +1,5 @@
 package org.fenci.fencingfplus2.manager;
 
-
 import org.fenci.fencingfplus2.FencingFPlus2;
 import org.fenci.fencingfplus2.util.Globals;
 

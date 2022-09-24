@@ -10,6 +10,9 @@ import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemAir;
+import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -28,6 +31,8 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class PlayerUtil implements Globals {
+    public static BlockPos nextPos;
+
     public static UUID getUUIDFromName(final String name) {
         try {
             final lookUpUUID process = new lookUpUUID(name);
@@ -46,6 +51,13 @@ public class PlayerUtil implements Globals {
 
     public static double getDistanceSq(EntityPlayer player, BlockPos pos) {
         return player.getDistanceSq(pos.getX(), pos.getY(), pos.getZ());
+    }
+
+    public static boolean isInventoryFull() { //TODO: Test this to make sure it works
+        for (int i = 0; i < 36; i++) {
+            if (mc.player.inventory.getStackInSlot(i).getItem().equals(Items.AIR)) return false;
+        }
+        return true;
     }
 
     public static double[] forward(final double speed) {
@@ -106,8 +118,8 @@ public class PlayerUtil implements Globals {
                 moveForward = -1.0f;
         }
 
-        double motionX = Math.cos(Math.toRadians( rotationYaw + 90.0f));
-        double motionZ = Math.sin( Math.toRadians(rotationYaw + 90.0f));
+        double motionX = Math.cos(Math.toRadians(rotationYaw + 90.0f));
+        double motionZ = Math.sin(Math.toRadians(rotationYaw + 90.0f));
 
         double newX = moveForward * speed * motionX + moveStrafe * speed * motionZ;
         double newZ = moveForward * speed * motionZ - moveStrafe * speed * motionX;
@@ -126,8 +138,6 @@ public class PlayerUtil implements Globals {
     public static boolean isInBurrow(EntityPlayer player) {
         return BlockUtil.getBlock(new BlockPos(Math.floor(player.posX), Math.floor(player.posY), Math.floor(player.posZ))).equals(Blocks.OBSIDIAN) || BlockUtil.getBlock(new BlockPos(Math.floor(player.posX), Math.floor(player.posY), Math.floor(player.posZ))).equals(Blocks.BEDROCK) || BlockUtil.getBlock(new BlockPos(Math.floor(player.posX), Math.floor(player.posY), Math.floor(player.posZ))).equals(Blocks.WEB);
     }
-
-    public static BlockPos nextPos;
 
     public static BlockPos getNextPos() {
         if (mc.player == null || mc.world == null) return null;
@@ -192,6 +202,10 @@ public class PlayerUtil implements Globals {
         return block;
     }
 
+    public static boolean isWearingArmor(EntityPlayer player) {
+        return player.inventory.armorItemInSlot(0) != ItemStack.EMPTY || player.inventory.armorItemInSlot(1) != ItemStack.EMPTY || player.inventory.armorItemInSlot(2) != ItemStack.EMPTY || player.inventory.armorItemInSlot(3) != ItemStack.EMPTY;
+    }
+
     public static boolean isInLiquid() {
         if (mc.player != null) {
             if (mc.player.fallDistance >= 3.0f) {
@@ -216,9 +230,33 @@ public class PlayerUtil implements Globals {
         return false;
     }
 
+    public static Dimention getDimention(EntityPlayer player) {
+        Dimention dimention = null;
+        if (player.dimension == -1) {
+            dimention = Dimention.Nether;
+        } else if (player.dimension == 0) {
+            dimention = Dimention.Overworld;
+        } else if (player.dimension == 1) {
+            dimention = Dimention.End;
+        }
+        return dimention;
+    }
+
+    public static Dimention getDimention(int dimension) {
+        Dimention dimention = null;
+        if (dimension == -1) {
+            dimention = Dimention.Nether;
+        } else if (dimension == 0) {
+            dimention = Dimention.Overworld;
+        } else if (dimension == 1) {
+            dimention = Dimention.End;
+        }
+        return dimention;
+    }
+
     public static boolean isPlayerInRender(String player) {
         for (EntityPlayer player1 : mc.player.world.playerEntities) {
-            if (player1.getName().equals(player)) {
+            if (player1.getName().equalsIgnoreCase(player)) {
                 return true;
             }
         }
@@ -349,6 +387,20 @@ public class PlayerUtil implements Globals {
 
         public String getName() {
             return this.name;
+        }
+    }
+    
+    public enum Dimention {
+        Overworld(0xFFFFFF), Nether(0xd3443d), End(0xd65df5);
+
+        private final int color;
+
+        Dimention(int color) {
+            this.color = color;
+        }
+
+        public int getColor() {
+            return color;
         }
     }
 }

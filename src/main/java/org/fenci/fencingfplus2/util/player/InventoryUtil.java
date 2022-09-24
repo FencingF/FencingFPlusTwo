@@ -1,10 +1,7 @@
 package org.fenci.fencingfplus2.util.player;
 
 import net.minecraft.inventory.ClickType;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemSword;
-import net.minecraft.item.ItemTool;
+import net.minecraft.item.*;
 import net.minecraft.network.play.client.CPacketHeldItemChange;
 import net.minecraft.util.EnumHand;
 import org.fenci.fencingfplus2.util.Globals;
@@ -12,6 +9,8 @@ import org.fenci.fencingfplus2.util.Globals;
 import java.util.Objects;
 
 public class InventoryUtil implements Globals {
+
+    public static int itemCount;
 
     public static int getItemSlot(Item items) {
         for (int i = 0; i < 36; ++i) {
@@ -39,6 +38,18 @@ public class InventoryUtil implements Globals {
         return slot;
     }
 
+    public static int getSkullSlot() {
+        int slot = -1;
+        for (int i = 0; i < 9; i++) {
+            Item item = mc.player.inventory.getStackInSlot(i).getItem();
+            if (item instanceof ItemSkull) {
+                slot = i;
+                break;
+            }
+        }
+        return slot;
+    }
+
     public static boolean isHolding(Item item) {
         return mc.player.getHeldItem(EnumHand.MAIN_HAND).getItem().equals(item) || mc.player.getHeldItem(EnumHand.OFF_HAND).getItem().equals(item);
     }
@@ -55,8 +66,6 @@ public class InventoryUtil implements Globals {
         }
         return slot;
     }
-
-    public static int itemCount;
 
     public static int getItemCount(Item item, boolean includeOffhand) {
         if (!includeOffhand) {
@@ -130,17 +139,27 @@ public class InventoryUtil implements Globals {
         mc.player.connection.sendPacket(new CPacketHeldItemChange(slot));
         if (!silent) mc.player.inventory.currentItem = slot;
 
-        if (mc.player.connection.getNetworkManager().isChannelOpen()) {
-            mc.player.connection.getNetworkManager().processReceivedPackets();
-        } else {
-            mc.player.connection.getNetworkManager().handleDisconnection();
-        }
+//        if (mc.player.connection.getNetworkManager().isChannelOpen()) {
+//            mc.player.connection.getNetworkManager().processReceivedPackets();
+//        } else {
+//            mc.player.connection.getNetworkManager().handleDisconnection();
+//        }
     }
 
     public static boolean isInHotbar(Item item) {
         for (int i = 0; i < 9; ++i) {
             mc.player.inventory.getStackInSlot(i);
             if (mc.player.inventory.getStackInSlot(i).getItem() == item) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean isSkullInHotbar() {
+        for (int i = 0; i < 9; ++i) {
+            mc.player.inventory.getStackInSlot(i);
+            if (mc.player.inventory.getStackInSlot(i).getItem() instanceof ItemSkull) {
                 return true;
             }
         }
