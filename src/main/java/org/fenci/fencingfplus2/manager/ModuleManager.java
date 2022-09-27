@@ -129,6 +129,7 @@ public class ModuleManager implements Globals {
                 new AutoEZ(),
                 new CustomChat(),
                 new Notifier(),
+                new PopLag(),
                 new Spam()
 
         );

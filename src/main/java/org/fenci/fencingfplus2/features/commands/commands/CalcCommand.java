@@ -14,7 +14,6 @@ public class CalcCommand extends Command {
     @Override
     public void runCommand(List<String> args) {
         try {
-
             //TODO Fix error messages, plus make it more user friendly.
             if (args.size() <= 3)
             // mostly done by GitHub copilot lmao
@@ -46,8 +45,6 @@ public class CalcCommand extends Command {
                 } else {
                     ClientMessage.sendErrorMessage(getSyntax());
                 }
-
-
         } catch (Exception ignored) {
         }
     }

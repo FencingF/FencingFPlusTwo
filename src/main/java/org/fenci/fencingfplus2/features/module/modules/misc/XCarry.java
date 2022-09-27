@@ -8,7 +8,7 @@ import org.fenci.fencingfplus2.features.module.Module;
 public class XCarry extends Module {
 
     public XCarry() {
-        super("XCarry", "Allows you to carry items in your inventory slot", Category.Misc);
+        super("XCarry", "Allows you to carry items in your crafting slots", Category.Misc);
     }
 
     @SubscribeEvent

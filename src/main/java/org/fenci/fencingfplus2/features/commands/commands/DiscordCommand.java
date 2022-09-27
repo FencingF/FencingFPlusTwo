@@ -7,7 +7,7 @@ import java.util.List;
 //made by flixzit pasted by andrew
 public class DiscordCommand extends Command {
     public DiscordCommand() {
-        super("discord", "shows all commands", "discord");
+        super("discord", "Invites you to the client discord", "discord");
     }
 
     @Override

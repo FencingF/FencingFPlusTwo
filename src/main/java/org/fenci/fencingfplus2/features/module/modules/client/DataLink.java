@@ -34,7 +34,7 @@ public class DataLink extends Module {
     public static final Setting<Integer> removeTime = new Setting<>("RemoveTime (ms)", 15000, 5000, 20000);
     public static final Setting<Integer> players = new Setting<>("Players", 2, 1, 7);
     public static final Setting<Boolean> debug = new Setting<>("Debug", false);
-    public static final Setting<Boolean> inChat = new Setting<>("InChat", true);
+    public static final Setting<Boolean> inChat = new Setting<>("InChat", false);
     public static final Setting<Boolean> antiNaked = new Setting<>("AntiNaked", false);
     public static final Setting<Boolean> help = new Setting<>("Help", false);
 

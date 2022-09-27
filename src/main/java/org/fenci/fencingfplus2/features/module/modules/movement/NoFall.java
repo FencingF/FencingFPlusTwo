@@ -8,7 +8,7 @@ import org.fenci.fencingfplus2.setting.Setting;
 
 public class NoFall extends Module {
     public NoFall() {
-        super("NoFall", "cancels your fall", Module.Category.Movement);
+        super("NoFall", "Cancels your fall", Module.Category.Movement);
     }
 
     public static final Setting<Mode> packet = new Setting<>("Packet", Mode.Packet);
@@ -18,7 +18,7 @@ public class NoFall extends Module {
     @Override
     public void onUpdate() {
         if (mc.player.fallDistance > distance.getValue() && packet.getValue() == Mode.Anti) {
-            mc.player.motionY = 1;
+            mc.player.motionY = 0;
         }
     }
 
