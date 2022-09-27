@@ -79,6 +79,11 @@ public class FriendManager {
     }
 
     public boolean isFriend(UUID uuid) {
-        return this.friends.stream().anyMatch((friend) -> friend.getUuid().equals(uuid));
+        for (Friend friend : getFriends()) {
+            if (friend.getUuid().equals(uuid)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
