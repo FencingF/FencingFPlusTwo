@@ -26,11 +26,9 @@ public class PopLag extends Module {
         if (event.getPacket() instanceof SPacketChat) {
             SPacketChat packet = event.getPacket();
             String text = packet.getChatComponent().getUnformattedText();
-            for (char c : text.toCharArray()) {
-                if (LAGMSG.contains(String.valueOf(c)) || OSTRICHMSG.contains(String.valueOf(c))) {
-                    event.setCanceled(true);
-                    ClientMessage.sendMessage("Blocked potential lag message client side.");
-                }
+            if (text.contains("\u0B01") || text.contains("\u0201") || text.contains("\u2701") || text.equals(LAGMSG) || text.equals(OSTRICHMSG)) {
+                event.setCanceled(true);
+                ClientMessage.sendOverwriteClientMessage("Blocked potential lag message client side.");
             }
         }
     }
