@@ -21,7 +21,7 @@ apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'org.spongepowered.mixin'
 
 
-version = '2.4.3 - beta fix' // Jar output Version
+version = '2.5.0' // Jar output Version
 group = 'org.fenci.fencingfplus2'
 archivesBaseName = 'FencingF+2' // Jar output name
 

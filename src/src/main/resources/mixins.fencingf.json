@@ -1,0 +1,31 @@
+{
+  "required": true,
+  "compatibilityLevel": "JAVA_8",
+  "package": "org.fenci.fencingfplus2.mixin.mixins",
+  "refmap": "mixins.fencingf.refmap.json",
+  "minVersion": "0.7.4",
+  "mixins": [
+    "block.MixinBlockWeb",
+    "entity.MixinEntity",
+    "entity.MixinEntityLivingBase",
+    "entity.MixinEntityPlayerSP",
+    "entity.MixinNetHandlerPlayClient",
+    "entity.MixinPlayerControllerMP",
+    "entity.MixinRenderPlayer",
+    "entity.MixinAbstractClientPlayer",
+    "misc.ICPacketUseEntityMixin",
+    "misc.MixinItemFood",
+    "network.ICPacketPlayer",
+    "network.MixinNetworkManager",
+    "render.MixinEntityRenderer",
+    "render.MixinFontRenderer",
+    "render.MixinGuiBossOverlay",
+    "render.MixinGuiPlayerTabOverlay",
+    "render.MixinLayerArmorBase",
+    "render.MixinLayerDeadmau5Head",
+    "render.MixinRenderLivingBase",
+    "render.MixinRenderManager",
+    "world.MixinWorld",
+    "world.MixinWorldClient"
+  ]
+}
