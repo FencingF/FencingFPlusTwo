@@ -18,6 +18,7 @@ public class CommandManager {
         commands.add(new BindCommand());
         commands.add(new DefaultCommand());
         commands.add(new DiscordCommand());
+        commands.add(new FontCommand());
         commands.add(new CalcCommand());
         commands.add(new FriendCommand());
         commands.add(new HelpCommand());

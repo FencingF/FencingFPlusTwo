@@ -15,13 +15,17 @@ public class ClickGUI extends Module {
     public static final Setting<Integer> getred = new Setting<>("OutlineRed", 96, 0, 255);
     public static final Setting<Integer> getgreen = new Setting<>("OutlineGreen", 194, 0, 255);
     public static final Setting<Integer> getblue = new Setting<>("OutlineBlue", 255, 0, 255);
+    public static final Setting<Integer> getAlpha = new Setting<>("OutlineAlpha", 255, 0, 255);
     public static final Setting<Integer> insidered = new Setting<>("InsideRed", 96, 0, 255);
     public static final Setting<Integer> insidegreen = new Setting<>("InsideGreen", 194, 0, 255);
     public static final Setting<Integer> insideblue = new Setting<>("InsideBlue", 255, 0, 255);
+    public static final Setting<Integer> insideAlpha = new Setting<>("InsideAlpha", 255, 0, 255);
     public static final Setting<Integer> backgroundred = new Setting<>("BackgroundRed", 45, 0, 255);
     public static final Setting<Integer> backgroundgreen = new Setting<>("BackgroundGreen", 45, 0, 255);
     public static final Setting<Integer> backgroundblue = new Setting<>("BackgroundBlue", 45, 0, 255);
-    public static final Setting<Boolean> brackets = new Setting<>("Brackets", false);
+    public static final Setting<Integer> backgroundalpha = new Setting<>("BackgroundAlpha", 255, 0, 255);
+    public static final Setting<Boolean> brackets = new Setting<>("Brackets", true);
+    public static final Setting<Boolean> bracketsKey = new Setting<>("BracketKey", true);
     public static final Setting<Boolean> moduleCount = new Setting<>("ModuleCount", true);
     public static final Setting<Float> lineWidth = new Setting<>("LineWidth", 3.7f, 0.1f, 10f);
     public static final Setting<Boolean> rainbow = new Setting<>("Rainbow", false);
@@ -39,11 +43,11 @@ public class ClickGUI extends Module {
     @Override
     protected void onEnable() {
         if (!fullNullCheck()) {
-            toggle(true);
+            this.setToggled(false);
             return;
         }
 
-        mc.displayGuiScreen(ClickGUIScreen.getInstance());
+        mc.displayGuiScreen(ClickGUIScreen.getGUIINSTANCE());
     }
 
     @Override
@@ -56,7 +60,7 @@ public class ClickGUI extends Module {
     @Override
     public void onUpdate() {
         if (mc.currentScreen == null) {
-            toggle(true);
+            this.setToggled(false);
         }
     }
 }

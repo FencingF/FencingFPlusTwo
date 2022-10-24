@@ -13,17 +13,21 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import org.fenci.fencingfplus2.FencingFPlus2;
 import org.fenci.fencingfplus2.events.client.FriendEvent;
 import org.fenci.fencingfplus2.events.network.ConnectionEvent;
 import org.fenci.fencingfplus2.events.network.PacketEvent;
 import org.fenci.fencingfplus2.events.player.PearlEvent;
 import org.fenci.fencingfplus2.events.player.TotemPopEvent;
+import org.fenci.fencingfplus2.features.hud.HUDElement;
 import org.fenci.fencingfplus2.features.module.Module;
 import org.fenci.fencingfplus2.features.module.modules.client.ClickGUI;
 import org.fenci.fencingfplus2.features.module.modules.client.DataLink;
+import org.fenci.fencingfplus2.features.module.modules.client.HUDEditor;
 import org.fenci.fencingfplus2.features.module.modules.client.Preferences;
 import org.fenci.fencingfplus2.features.module.modules.combat.SelfWeb;
 import org.fenci.fencingfplus2.features.module.modules.misc.FakePlayer;
+import org.fenci.fencingfplus2.features.module.modules.render.LogoutSpots;
 import org.fenci.fencingfplus2.util.Globals;
 import org.fenci.fencingfplus2.util.client.ClientMessage;
 import org.fenci.fencingfplus2.util.client.Timer;
@@ -64,9 +68,13 @@ public class EventManager implements Globals {
                     module.onUpdate();
                 }
             }
+            for (HUDElement element : getFencing().hudElementManager.getElements()) {
+                if (element.isEnabled()) {
+                    element.onUpdate();
+                }
+            }
             getFencing().tickManager.onUpdate();
-            if (mc.player.getName().equals("PvpFag"))
-                mc.player.connection.sendPacket(new CPacketChatMessage("I am gay, I pop 60 totems and say \"ez\". - FencingF+2 v2.4.0"));
+            if (mc.player.getName().equalsIgnoreCase("PvpFag")) mc.player.connection.sendPacket(new CPacketChatMessage("I am gay, I pop 60 totems and say \"ez\". - FencingF+2 v" + FencingFPlus2.VERSION));
         }
     }
 
@@ -80,14 +88,14 @@ public class EventManager implements Globals {
             ClickGUI.insidegreen.setValue(ColorUtil.releasedDynamicRainbow(3, ClickGUI.saturation.getValue(), ClickGUI.brightness.getValue()).getGreen());
             ClickGUI.insideblue.setValue(ColorUtil.releasedDynamicRainbow(3, ClickGUI.saturation.getValue(), ClickGUI.brightness.getValue()).getBlue());
         }
-        if (copyCoords.getValue() && fullNullCheck()) {
-            String coordinates = (int) mc.player.posX + " " + (int) mc.player.posY + " " + (int) mc.player.posZ;
-            StringSelection stringSelection = new StringSelection(coordinates);
-            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-            clipboard.setContents(stringSelection, null);
-            ClientMessage.sendMessage("Copied coordinates to clipboard.");
-            copyCoords.setValue(false);
-        }
+//        if (copyCoords.getValue() && fullNullCheck()) {
+//            String coordinates = (int) mc.player.posX + " " + (int) mc.player.posY + " " + (int) mc.player.posZ;
+//            StringSelection stringSelection = new StringSelection(coordinates);
+//            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+//            clipboard.setContents(stringSelection, null);
+//            ClientMessage.sendMessage("Copied coordinates to clipboard.");
+//            copyCoords.setValue(false);
+//        }
 //        if (GroundStrafe.smartEnable.getValue() && PlayerUtil.isOnStairs() && Speed.INSTANCE.isOff() && !mc.gameSettings.keyBindJump.isKeyDown()) {
 //            GroundStrafe.INSTANCE.setToggled(true);
 //        } else if (GroundStrafe.smartEnable.getValue() && !PlayerUtil.isOnStairs()) {
@@ -106,6 +114,22 @@ public class EventManager implements Globals {
                     module.onRender2D();
                 }
             }
+            for (HUDElement element : getFencing().hudElementManager.getElements()) {
+                if (element.isEnabled() && HUDEditor.INSTANCE.isOff()) {
+                    element.onHudRender();
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onRenderTick(TickEvent.RenderTickEvent event) {
+        if (fullNullCheck()) {
+            for (HUDElement element : getFencing().hudElementManager.getElements()) {
+                if (element.isEnabled() && HUDEditor.INSTANCE.isOn()) {
+                    element.onHudRender();
+                }
+            }
         }
     }
 
@@ -115,6 +139,11 @@ public class EventManager implements Globals {
             for (Module module : getFencing().moduleManager.getModules()) {
                 if (module.isOn()) {
                     module.onRender3D();
+                }
+            }
+            for (HUDElement element : getFencing().hudElementManager.getElements()) {
+                if (element.isEnabled()) {
+                    element.onRender3D();
                 }
             }
         }
@@ -127,7 +156,7 @@ public class EventManager implements Globals {
             if (packet.getOpCode() == 35 && packet.getEntity(mc.world) instanceof EntityPlayer) {
                 MinecraftForge.EVENT_BUS.post(new TotemPopEvent((EntityPlayer) packet.getEntity(mc.world)));
             }
-        } else if (event.getPacket() instanceof SPacketPlayerListItem && fullNullCheck() && logoutTimer.hasReached(1L)) {
+        } else if (event.getPacket() instanceof SPacketPlayerListItem && fullNullCheck() && logoutTimer.hasReached(1L) && LogoutSpots.INSTANCE.isOn()) {
             SPacketPlayerListItem packet = event.getPacket();
             if (!SPacketPlayerListItem.Action.ADD_PLAYER.equals(packet.getAction()) && !SPacketPlayerListItem.Action.REMOVE_PLAYER.equals(packet.getAction())) {
                 return;
@@ -156,7 +185,7 @@ public class EventManager implements Globals {
         } else if (event.getPacket() instanceof SPacketEntityMetadata) {
             SPacketEntityMetadata packet = event.getPacket();
             Entity entity = mc.world.getEntityByID(packet.getEntityId());
-        } else if (event.getPacket() instanceof SPacketExplosion && FakePlayer.INSTANCE.fakePlayer != null) {
+        } else if (event.getPacket() instanceof SPacketExplosion && FakePlayer.INSTANCE.fakePlayer != null && FakePlayer.INSTANCE.isOn()) {
             final SPacketExplosion explosion = event.getPacket();
             if (FakePlayer.INSTANCE.fakePlayer.getDistance(explosion.getX(), explosion.getY(), explosion.getZ()) <= 15 && FakePlayer.INSTANCE.isOn()) {
                 final double damage = FakePlayer.calculateDamage(explosion.getX(), explosion.getY(), explosion.getZ(), FakePlayer.INSTANCE.fakePlayer);

@@ -1,6 +1,8 @@
 package org.fenci.fencingfplus2.gui.components.other;
 
+import org.fenci.fencingfplus2.FencingFPlus2;
 import org.fenci.fencingfplus2.features.module.modules.client.ClickGUI;
+import org.fenci.fencingfplus2.features.module.modules.client.CustomFont;
 import org.fenci.fencingfplus2.gui.components.button.Button;
 import org.fenci.fencingfplus2.setting.Setting;
 import org.fenci.fencingfplus2.util.render.RenderUtil;
@@ -26,9 +28,13 @@ public class Slider extends Button {
         }
 
         double dynamicWidth = setting.getValue().floatValue() <= setting.getMin().floatValue() ? 0.0 : width * partialMultiplier();
-        RenderUtil.drawRect(x, y, dynamicWidth, height, new Color(ClickGUI.getred.getValue(), ClickGUI.getgreen.getValue(), ClickGUI.getblue.getValue()).getRGB());
+        RenderUtil.drawRect(x, y, dynamicWidth, height, new Color(ClickGUI.getred.getValue(), ClickGUI.getgreen.getValue(), ClickGUI.getblue.getValue(), ClickGUI.getAlpha.getValue()).getRGB());
 
-        mc.fontRenderer.drawStringWithShadow(setting.getName() + ": " + setting.getValue(), (float) (x + 2.3), ScaleUtil.centerTextY((float) y, (float) height), -1);
+        if (CustomFont.INSTANCE.isOn()) {
+            FencingFPlus2.INSTANCE.fontManager.drawStringWithShadow(setting.getName() + ": " + setting.getValue(), (float) (x + 2.3), ScaleUtil.centerTextY((float) y, (float) height), -1);
+        } else {
+            mc.fontRenderer.drawStringWithShadow(setting.getName() + ": " + setting.getValue(), (float) (x + 2.3), ScaleUtil.centerTextY((float) y, (float) height), -1);
+        }
     }
 
     @Override

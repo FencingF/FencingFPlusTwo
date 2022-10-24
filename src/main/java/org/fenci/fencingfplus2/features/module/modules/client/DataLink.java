@@ -6,6 +6,7 @@ import net.minecraft.network.play.client.CPacketChatMessage;
 import net.minecraft.network.play.server.SPacketChat;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import org.fenci.fencingfplus2.FencingFPlus2;
 import org.fenci.fencingfplus2.events.client.OptionChangeEvent;
 import org.fenci.fencingfplus2.events.network.PacketEvent;
 import org.fenci.fencingfplus2.features.module.Module;
@@ -36,9 +37,10 @@ public class DataLink extends Module {
     public static final Setting<Boolean> debug = new Setting<>("Debug", false);
     public static final Setting<Boolean> inChat = new Setting<>("InChat", false);
     public static final Setting<Boolean> antiNaked = new Setting<>("AntiNaked", false);
+    public static final Setting<Boolean> noLeak = new Setting<>("NoBaseLeak", true);
     public static final Setting<Boolean> help = new Setting<>("Help", false);
 
-    //gobal vars
+    //global vars
     public static float yStart = 30f;
     public static float xStart = 2f;
 
@@ -85,6 +87,7 @@ public class DataLink extends Module {
         //sending data
         for (Friend friend : getFencing().friendManager.getFriends()) { //TODO Add delay in between each friend message
             if (!timer.hasReached(updateTime.getValue())) return; //This might not work I have no idea
+            if (noLeak.getValue() && mc.player.getDistance(0, 0, 0) > 3000) return;
             if (mc.player.connection.getPlayerInfo(friend.getAlias()) == null) continue;
             //mc.player.sendChatMessage("/msg " + friend.getAlias() + " " + sendEncryptedData());
             if (sendEncryptedData().toString().equals("")) continue;
@@ -160,7 +163,11 @@ public class DataLink extends Module {
                 for (DataLinkData dataLinkData : dataToDisplay.stream().sorted(Comparator.comparingDouble(dataLinkData -> dataLinkData.getDistance(mc.player))).collect(Collectors.toCollection(LinkedHashSet::new))) {
                     if (dataLinkData.getName().equals(mc.player.getName())) continue;
                     if (PlayerUtil.isPlayerInRender(dataLinkData.getName())) continue;
-                    mc.fontRenderer.drawStringWithShadow(ChatFormatting.WHITE + name + ChatFormatting.GREEN + dataLinkData.getName() + ChatFormatting.WHITE + x + ChatFormatting.GREEN + dataLinkData.getPosX() + ChatFormatting.WHITE + y + ChatFormatting.GREEN + dataLinkData.getPosY() + ChatFormatting.WHITE + z + ChatFormatting.GREEN + dataLinkData.getPosZ() + ChatFormatting.WHITE + health + ChatFormatting.RESET + dataLinkData.getHealth() + ChatFormatting.WHITE + dimension + ColorUtil.getDimentionColor(dataLinkData.getDimension()) + PlayerUtil.getDimention(dataLinkData.getDimension()), xStart, yStart, ColorUtil.getHealthColor(dataLinkData.getHealth()));
+                    if (CustomFont.INSTANCE.isOn()) {
+                        FencingFPlus2.INSTANCE.fontManager.drawStringWithShadow(ChatFormatting.WHITE + name + ChatFormatting.GREEN + dataLinkData.getName() + ChatFormatting.WHITE + x + ChatFormatting.GREEN + dataLinkData.getPosX() + ChatFormatting.WHITE + y + ChatFormatting.GREEN + dataLinkData.getPosY() + ChatFormatting.WHITE + z + ChatFormatting.GREEN + dataLinkData.getPosZ() + ChatFormatting.WHITE + health + ChatFormatting.RESET + dataLinkData.getHealth() + ChatFormatting.WHITE + dimension + ColorUtil.getDimentionColor(dataLinkData.getDimension()) + PlayerUtil.getDimention(dataLinkData.getDimension()), xStart, yStart, ColorUtil.getHealthColor(dataLinkData.getHealth()));
+                    } else {
+                        mc.fontRenderer.drawStringWithShadow(ChatFormatting.WHITE + name + ChatFormatting.GREEN + dataLinkData.getName() + ChatFormatting.WHITE + x + ChatFormatting.GREEN + dataLinkData.getPosX() + ChatFormatting.WHITE + y + ChatFormatting.GREEN + dataLinkData.getPosY() + ChatFormatting.WHITE + z + ChatFormatting.GREEN + dataLinkData.getPosZ() + ChatFormatting.WHITE + health + ChatFormatting.RESET + dataLinkData.getHealth() + ChatFormatting.WHITE + dimension + ColorUtil.getDimentionColor(dataLinkData.getDimension()) + PlayerUtil.getDimention(dataLinkData.getDimension()), xStart, yStart, ColorUtil.getHealthColor(dataLinkData.getHealth()));
+                    }
                     yStart += 10;
                 }
                 yStart = 20f;

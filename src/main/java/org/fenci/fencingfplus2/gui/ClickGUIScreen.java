@@ -1,10 +1,16 @@
 package org.fenci.fencingfplus2.gui;
 
 import net.minecraft.client.gui.GuiScreen;
+import org.fenci.fencingfplus2.FencingFPlus2;
+import org.fenci.fencingfplus2.features.hud.HUDElement;
 import org.fenci.fencingfplus2.features.module.Module;
+import org.fenci.fencingfplus2.features.module.modules.client.ClickGUI;
+import org.fenci.fencingfplus2.features.module.modules.client.HUDEditor;
 import org.fenci.fencingfplus2.gui.components.Panel;
 import org.fenci.fencingfplus2.gui.components.button.ModuleButton;
+import org.fenci.fencingfplus2.gui.components.other.HUDOption;
 import org.fenci.fencingfplus2.util.Globals;
+import org.fenci.fencingfplus2.util.client.ClientMessage;
 import org.lwjgl.input.Mouse;
 
 import java.io.IOException;
@@ -13,37 +19,56 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ClickGUIScreen extends GuiScreen implements Globals {
-    private static ClickGUIScreen INSTANCE;
+    private static ClickGUIScreen GUIINSTANCE;
+    private static ClickGUIScreen EDITORINSTANCE;
 
     private final ArrayList<Panel> panels = new ArrayList<>();
 
     private ClickGUIScreen() {
         double x = 4.0;
-        for (Module.Category category : Module.Category.values()) {
-            List<Module> modules = getFencing().moduleManager.getModules()
-                    .stream().filter((module) -> module.getCategory().equals(category))
-                    .collect(Collectors.toList());
+        if (ClickGUI.INSTANCE.isOn()) {
+            for (Module.Category category : Module.Category.values()) {
+                List<Module> modules = getFencing().moduleManager.getModules()
+                        .stream().filter((module) -> module.getCategory().equals(category))
+                        .filter(module -> !module.getName().equals("HUDEditor"))
+                        .collect(Collectors.toList());
 
-            if (modules.isEmpty()) {
-                continue;
+                if (modules.isEmpty()) {
+                    continue;
+                }
+
+                panels.add(new Panel(category.name(), x, 4.0, 88.0, 15) {
+                    @Override
+                    public void init() {
+                        modules.forEach((module) -> buttons.add(new ModuleButton(module)));
+                    }
+                });
+
+                x += 92.0; //amount of space in between each category panel
             }
-
-            panels.add(new Panel(category.name(), x, 4.0, 88.0, 15) {
+        }
+        if (HUDEditor.INSTANCE.isOn()) {
+            panels.add(new Panel("Elements:", 552, 4.0, 88.0, 15) {
                 @Override
                 public void init() {
-                    modules.forEach((module) -> buttons.add(new ModuleButton(module)));
+                    FencingFPlus2.INSTANCE.hudElementManager.getElements().forEach((component) -> elements.add(new HUDOption(component)));
                 }
             });
-
-            x += 92.0; //amount of space in between each category panel
         }
     }
 
-    public static ClickGUIScreen getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new ClickGUIScreen();
+    public static ClickGUIScreen getGUIINSTANCE() {
+        if (GUIINSTANCE == null) {
+            GUIINSTANCE = new ClickGUIScreen();
         }
-        return INSTANCE;
+        return GUIINSTANCE;
+    }
+
+    public static ClickGUIScreen getEDITORINSTANCE() {
+        if (EDITORINSTANCE == null) {
+            EDITORINSTANCE = new ClickGUIScreen();
+        }
+        return EDITORINSTANCE;
     }
 
     @Override

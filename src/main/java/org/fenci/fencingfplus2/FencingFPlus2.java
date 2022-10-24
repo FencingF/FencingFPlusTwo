@@ -8,10 +8,11 @@ import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.fenci.fencingfplus2.features.module.modules.chat.Notifier;
+import org.fenci.fencingfplus2.features.module.modules.client.Capes;
 import org.fenci.fencingfplus2.features.module.modules.client.DiscordRPC;
 import org.fenci.fencingfplus2.features.module.modules.client.HUD;
 import org.fenci.fencingfplus2.manager.*;
+import org.fenci.fencingfplus2.manager.FontManager;
 import org.fenci.fencingfplus2.manager.friend.FriendManager;
 import org.lwjgl.opengl.Display;
 
@@ -21,15 +22,18 @@ import java.io.IOException;
 public class FencingFPlus2 {
     public static final String NAME = "FencingF+2";
     public static final String ID = "fencingf+2";
-    public static final String VERSION = "2.4.2 - beta";
+    public static final String VERSION = "2.5.0";
     public static final Logger LOGGER = LogManager.getLogger("FencingFPlus2");
 
     @Mod.Instance
     public static FencingFPlus2 INSTANCE;
 
+    public CapeManager capeManager;
     public ModuleManager moduleManager;
     public CommandManager commandManager;
     public ConfigManager configManager;
+    public HUDElementManager hudElementManager;
+    public FontManager fontManager;
     public FriendManager friendManager;
     public KitManager kitManager;
     public TickManager tickManager;
@@ -43,8 +47,17 @@ public class FencingFPlus2 {
 
         MinecraftForge.EVENT_BUS.register(EventManager.getInstance());
 
+        capeManager = new CapeManager();
+        MinecraftForge.EVENT_BUS.register(capeManager);
+
+        fontManager = new FontManager();
+        MinecraftForge.EVENT_BUS.register(fontManager);
+
         moduleManager = new ModuleManager();
         MinecraftForge.EVENT_BUS.register(moduleManager);
+
+        hudElementManager = new HUDElementManager();
+        MinecraftForge.EVENT_BUS.register(hudElementManager);
 
         commandManager = new CommandManager();
         MinecraftForge.EVENT_BUS.register(commandManager);
@@ -71,6 +84,7 @@ public class FencingFPlus2 {
         if (!configManager.hasRan()) {
             HUD.INSTANCE.toggle(true);
             DiscordRPC.INSTANCE.toggle(true);
+            Capes.INSTANCE.toggle(true);
         }
     }
 
@@ -81,8 +95,6 @@ public class FencingFPlus2 {
         //TODO : ADD ICON TO DISPLAY CAN'T BE CUMMED
 
         String icon = String.valueOf(new ResourceLocation(ID, "textures/gui/logo.png"));
-
-
     }
 }
 

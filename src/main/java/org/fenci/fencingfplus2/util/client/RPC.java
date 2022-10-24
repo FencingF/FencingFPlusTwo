@@ -6,6 +6,7 @@ import club.minnced.discord.rpc.DiscordRichPresence;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiMultiplayer;
 import net.minecraft.client.gui.GuiScreenServerList;
+import org.fenci.fencingfplus2.FencingFPlus2;
 import org.fenci.fencingfplus2.util.Globals;
 
 public class RPC implements Globals {
@@ -17,7 +18,7 @@ public class RPC implements Globals {
         rpc.Discord_Initialize("991384089586319370", handler, true, null);
         presence.startTimestamp = System.currentTimeMillis() / 1000L;
         presence.largeImageKey = "large";
-        presence.largeImageText = "2.3.0";
+        presence.largeImageText = FencingFPlus2.VERSION;
         String server = "In Server Menu";
         rpc.Discord_UpdatePresence(presence);
         Thread thread = new Thread(() ->

@@ -43,9 +43,7 @@ public class Surround extends Module {
     public void onEnable() {
         if (!centerMode.getValue().equals(Center.Off)) {
             if (centerMode.getValue().equals(Center.TP)) {
-                mc.player.setVelocity(0.0D, 0.0D, 0.0D);
-                mc.player.setPosition(Math.floor(mc.player.posX) + 0.5, mc.player.posY, Math.floor(mc.player.posZ) + 0.5);
-                mc.player.connection.sendPacket(new CPacketPlayer.Position(Math.floor(mc.player.posX) + 0.5, mc.player.posY, Math.floor(mc.player.posZ) + 0.5, true));
+                PlayerUtil.centerPlayer();
                 delayTimer.reset();
             } else {
                 mc.player.motionX = (Math.floor(mc.player.posX) + 0.5D - mc.player.posX) / 2.0D;

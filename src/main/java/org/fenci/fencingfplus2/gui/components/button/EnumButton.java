@@ -1,5 +1,7 @@
 package org.fenci.fencingfplus2.gui.components.button;
 
+import org.fenci.fencingfplus2.FencingFPlus2;
+import org.fenci.fencingfplus2.features.module.modules.client.CustomFont;
 import org.fenci.fencingfplus2.setting.Setting;
 import org.fenci.fencingfplus2.util.render.ScaleUtil;
 
@@ -13,7 +15,11 @@ public class EnumButton extends Button {
 
     @Override
     public void drawComponent(int mouseX, int mouseY, float partialTicks) {
-        mc.fontRenderer.drawStringWithShadow(setting.getName() + ": " + setting.getValue().name(), (float) (x + 2.3), ScaleUtil.centerTextY((float) y, (float) height), -1);
+        if (CustomFont.INSTANCE.isOn()) {
+            FencingFPlus2.INSTANCE.fontManager.drawStringWithShadow(setting.getName() + ": " + setting.getValue().name(), (float) (x + 2.3), ScaleUtil.centerTextY((float) y, (float) height), -1);
+        } else {
+            mc.fontRenderer.drawStringWithShadow(setting.getName() + ": " + setting.getValue().name(), (float) (x + 2.3), ScaleUtil.centerTextY((float) y, (float) height), -1);
+        }
     }
 
     @Override

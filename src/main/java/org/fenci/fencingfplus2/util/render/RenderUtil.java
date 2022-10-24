@@ -7,10 +7,15 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import org.fenci.fencingfplus2.FencingFPlus2;
+import org.fenci.fencingfplus2.features.module.modules.client.CustomFont;
 import org.fenci.fencingfplus2.util.Globals;
 import org.lwjgl.opengl.GL11;
 
+import java.awt.*;
+import java.util.Locale;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
@@ -207,19 +212,23 @@ public class RenderUtil implements Globals {
     }
 
     public static int getStringWidth(final String str) {
-        return mc.fontRenderer.getStringWidth(str);
+        return FencingFPlus2.INSTANCE.fontManager.getStringWidth(str);
     }
 
     public static int getFontHeight() {
-        return mc.fontRenderer.FONT_HEIGHT;
+        return FencingFPlus2.INSTANCE.fontManager.getTextHeight();
     }
 
     public static void drawText(BlockPos pos, String text) {
         GlStateManager.pushMatrix();
         RenderUtil.glBillboardDistanceScaled((float) pos.getX() + 0.5f, (float) pos.getY() + 0.5f, (float) pos.getZ() + 0.5f, RenderUtil.mc.player, 1.0f);
         GlStateManager.disableDepth();
-        GlStateManager.translate(-((double) mc.fontRenderer.getStringWidth(text) / 2.0), 0.0, 0.0);
-        mc.fontRenderer.drawStringWithShadow(text, 0.0f, 0.0f, -5592406);
+        GlStateManager.translate(-((double) FencingFPlus2.INSTANCE.fontManager.getStringWidth(text) / 2.0), 0.0, 0.0);
+        if (CustomFont.INSTANCE.isOn()) {
+            FencingFPlus2.INSTANCE.fontManager.drawStringWithShadow(text, 0.0f, 0.0f, -5592406);
+        } else {
+            mc.fontRenderer.drawStringWithShadow(text, 0.0f, 0.0f, -5592406);
+        }
         GlStateManager.popMatrix();
     }
 

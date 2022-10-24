@@ -10,8 +10,10 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.fenci.fencingfplus2.FencingFPlus2;
 import org.fenci.fencingfplus2.events.network.ConnectionEvent;
 import org.fenci.fencingfplus2.features.module.Module;
+import org.fenci.fencingfplus2.features.module.modules.client.CustomFont;
 import org.fenci.fencingfplus2.features.module.modules.client.Preferences;
 import org.fenci.fencingfplus2.util.render.PopChamsUtil;
 import org.fenci.fencingfplus2.util.render.RenderUtil;
@@ -27,8 +29,11 @@ public class LogoutSpots extends Module {
     Color lineColorS;
     Color fillColorS;
 
+    public static LogoutSpots INSTANCE;
+
     public LogoutSpots() {
         super("LogoutSpots", "Shows player logouts", Category.Render);
+        INSTANCE = this;
     }
 
     @SubscribeEvent
@@ -103,7 +108,11 @@ public class LogoutSpots extends Module {
 
         RenderUtil.drawBorderedRect(-width - 3, 8.0, width + 2, 20.0, 1.2, 1962934272, c.getRGB());
 
-        mc.fontRenderer.drawStringWithShadow(name, (float) (-width), 10.0f, new Color(161, 61, 168).getRGB());
+        if (CustomFont.INSTANCE.isOn()) {
+            FencingFPlus2.INSTANCE.fontManager.drawStringWithShadow(name, (float) (-width), 10.0f, new Color(161, 61, 168).getRGB());
+        } else {
+            mc.fontRenderer.drawStringWithShadow(name, (float) (-width), 10.0f, new Color(161, 61, 168).getRGB());
+        }
 
         player.getHeldItemMainhand();
         player.getHeldItemOffhand();

@@ -7,6 +7,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentBase;
 import net.minecraft.util.text.TextComponentString;
 import org.fenci.fencingfplus2.FencingFPlus2;
+import org.fenci.fencingfplus2.features.module.modules.chat.Notifier;
 import org.fenci.fencingfplus2.features.module.modules.client.HUD;
 import org.fenci.fencingfplus2.manager.friend.Friend;
 import org.fenci.fencingfplus2.util.Globals;
@@ -18,11 +19,11 @@ import java.util.regex.Pattern;
 public class ClientMessage implements Globals {
 
     private static String opener() {
-        return ColorUtil.getBracketColorFromSetting(HUD.bracketColor.getValue()) + "[" + ColorUtil.getNameColorFromSetting(HUD.nameColor.getValue()) + FencingFPlus2.NAME + ColorUtil.getBracketColorFromSetting(HUD.bracketColor.getValue()) + "] " + ChatFormatting.RESET;
+        return ColorUtil.getBracketColorFromSetting(Notifier.bracketColor.getValue()) + "[" + ColorUtil.getNameColorFromSetting(Notifier.nameColor.getValue()) + FencingFPlus2.NAME + ColorUtil.getBracketColorFromSetting(Notifier.bracketColor.getValue()) + "] " + ChatFormatting.RESET;
     }
 
     private static String moduleOpener(String moduleName) {
-        return ColorUtil.getBracketColorFromSetting(HUD.bracketColor.getValue()) + "[" + ColorUtil.getNameColorFromSetting(HUD.nameColor.getValue()) + FencingFPlus2.NAME + ColorUtil.getBracketColorFromSetting(HUD.bracketColor.getValue()) + "] " + ChatFormatting.WHITE + "[" + moduleName + "] " + ChatFormatting.RESET;
+        return ColorUtil.getBracketColorFromSetting(Notifier.bracketColor.getValue()) + "[" + ColorUtil.getNameColorFromSetting(Notifier.nameColor.getValue()) + FencingFPlus2.NAME + ColorUtil.getBracketColorFromSetting(Notifier.bracketColor.getValue()) + "] " + ChatFormatting.WHITE + "[" + moduleName + "] " + ChatFormatting.RESET;
     }
 
     public static void sendMessage(String message) {

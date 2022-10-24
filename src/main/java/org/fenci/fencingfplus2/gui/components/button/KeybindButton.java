@@ -1,5 +1,7 @@
 package org.fenci.fencingfplus2.gui.components.button;
 
+import org.fenci.fencingfplus2.FencingFPlus2;
+import org.fenci.fencingfplus2.features.module.modules.client.CustomFont;
 import org.fenci.fencingfplus2.setting.Keybind;
 import org.fenci.fencingfplus2.util.render.ScaleUtil;
 import org.lwjgl.input.Keyboard;
@@ -16,7 +18,11 @@ public class KeybindButton extends Button {
     @Override
     public void drawComponent(int mouseX, int mouseY, float partialTicks) {
         String text = listening ? "Waiting..." : (id + ": " + Keyboard.getKeyName(setting.getValue()));
-        mc.fontRenderer.drawStringWithShadow(text, (float) (x + 2.3), ScaleUtil.centerTextY((float) y, (float) height), -1);
+        if (CustomFont.INSTANCE.isOn()) {
+            FencingFPlus2.INSTANCE.fontManager.drawStringWithShadow(text, (float) (x + 2.3), ScaleUtil.centerTextY((float) y, (float) height), -1);
+        } else {
+            mc.fontRenderer.drawStringWithShadow(text, (float) (x + 2.3), ScaleUtil.centerTextY((float) y, (float) height), -1);
+        }
     }
 
     @Override

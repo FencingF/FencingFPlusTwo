@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import org.fenci.fencingfplus2.features.hud.HUDElement;
 import org.fenci.fencingfplus2.util.player.PlayerUtil;
 import org.json.simple.parser.JSONParser;
 import org.fenci.fencingfplus2.FencingFPlus2;
@@ -183,6 +184,19 @@ public class ConfigManager implements Globals {
                 fileWriter.flush();
                 fileWriter.close();
             }
+            for (HUDElement element : FencingFPlus2.INSTANCE.hudElementManager.getElements()) {
+                File elementFile = new File(FencingFPlusTwo.getAbsolutePath(), "Settings/HUD/" + element.getName() + ".json");
+                elementFile.getParentFile().mkdirs();
+                if (!elementFile.exists()) elementFile.createNewFile();
+                JsonObject object = new JsonObject();
+                object.addProperty("x", element.getPosX());
+                object.addProperty("y", element.getPosY());
+                object.addProperty("enabled", element.isEnabled());
+                FileWriter fileWriter = new FileWriter(elementFile);
+                fileWriter.write(object.toString());
+                fileWriter.flush();
+                fileWriter.close();
+            }
         } catch (Exception e) {
         }
     }
@@ -220,6 +234,19 @@ public class ConfigManager implements Globals {
                         value.setValue(converter.doBackward(element));
                     }
                 }
+            } catch (Exception e) {
+            }
+        }
+        for (HUDElement element : FencingFPlus2.INSTANCE.hudElementManager.getElements()) {
+            try {
+                File elementFile = new File(FencingFPlusTwo.getAbsolutePath(), "Settings/HUD/" + element.getName() + ".json");
+                elementFile.getParentFile().mkdirs();
+                if (!elementFile.exists()) elementFile.createNewFile();
+                String content = Files.readAllLines(elementFile.toPath()).stream().collect(Collectors.joining());
+                JsonObject object = new JsonParser().parse(content).getAsJsonObject();
+                element.setPosX(object.get("x").getAsInt());
+                element.setPosY(object.get("y").getAsInt());
+                element.setToggled(object.get("enabled").getAsBoolean());
             } catch (Exception e) {
             }
         }

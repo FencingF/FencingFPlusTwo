@@ -26,10 +26,13 @@ public class ModuleManager implements Globals {
         modules = Lists.newArrayList(
 
                 // client
+                new Capes(),
                 new ClickGUI(),
+                new CustomFont(),
                 new DataLink(),
                 new DiscordRPC(),
-                new HUD(),
+                //new HUD(),
+                new HUDEditor(),
                 new Preferences(),
 
                 // combat
@@ -53,6 +56,7 @@ public class ModuleManager implements Globals {
                 new Surround(),
 
                 // movement
+                new AutoCtrlEfly(),
                 new AutoJump(),
                 new TrackerManager(),
                 new AutoWalk(),
@@ -99,7 +103,7 @@ public class ModuleManager implements Globals {
                 //misc
                 new AntiLevitation(),
                 new AutoKit(),
-
+                new ECFinder(),
                 new FakePlayer(),
                 //new HotbarReplenish(),
                 new NickHider(),
@@ -114,7 +118,6 @@ public class ModuleManager implements Globals {
                 //exploit
                 //new AntiWeakness(),
                 //new AutoDupe(),
-                new Crash(),
                 new ChorusControl(),
                 //new ChunkLoader(),
                 //new ChorusPredict(),
@@ -123,6 +126,7 @@ public class ModuleManager implements Globals {
                 new HitboxCity(),
                 new NoPacketTP(),
                 new PearlBait(),
+                new UnDesync(),
 
                 //chat
                 new AntiLog4J(),

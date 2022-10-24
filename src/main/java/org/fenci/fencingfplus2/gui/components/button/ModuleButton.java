@@ -1,14 +1,19 @@
 package org.fenci.fencingfplus2.gui.components.button;
 
+import org.fenci.fencingfplus2.FencingFPlus2;
 import org.fenci.fencingfplus2.features.module.Module;
 import org.fenci.fencingfplus2.features.module.modules.client.ClickGUI;
+import org.fenci.fencingfplus2.features.module.modules.client.CustomFont;
+import org.fenci.fencingfplus2.features.module.modules.combat.AutoCrystal;
 import org.fenci.fencingfplus2.gui.components.Component;
 import org.fenci.fencingfplus2.gui.components.other.Slider;
 import org.fenci.fencingfplus2.setting.Keybind;
 import org.fenci.fencingfplus2.setting.Setting;
+import org.fenci.fencingfplus2.util.client.ClientMessage;
 import org.fenci.fencingfplus2.util.render.ColorUtil;
 import org.fenci.fencingfplus2.util.render.RenderUtil;
 import org.fenci.fencingfplus2.util.render.ScaleUtil;
+import org.lwjgl.input.Keyboard;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -46,18 +51,21 @@ public class ModuleButton extends Button {
     public void drawComponent(int mouseX, int mouseY, float partialTicks) {
         int color = -1;
         if (module.isToggled()) {
-            color = new Color(ClickGUI.getred.getValue(), ClickGUI.getgreen.getValue(), ClickGUI.getblue.getValue()).getRGB();
+            color = new Color(ClickGUI.getred.getValue(), ClickGUI.getgreen.getValue(), ClickGUI.getblue.getValue(), ClickGUI.getAlpha.getValue()).getRGB();
         } else if (isMouseInBounds(mouseX, mouseY)) {
-            color = ColorUtil.toHex(ClickGUI.backgroundred.getValue(), ClickGUI.backgroundgreen.getValue(), ClickGUI.backgroundblue.getValue());
+            color = new Color(ClickGUI.backgroundred.getValue(), ClickGUI.backgroundgreen.getValue(), ClickGUI.backgroundblue.getValue(), ClickGUI.backgroundalpha.getValue()).getRGB();
         }
 
         if (color != -1) {
             RenderUtil.drawRect(x, y, width, height, color);
         }
-
-        mc.fontRenderer.drawStringWithShadow(module.getName(), (float) (x + 2.3), ScaleUtil.centerTextY((float) y, (float) height), -1);
-        if (ClickGUI.brackets.getValue())
-            mc.fontRenderer.drawStringWithShadow(opened ? "﹀" : "[]", (float) ((x + width) - 7.3), ScaleUtil.centerTextY((float) y, (float) height), -1);
+        if (CustomFont.INSTANCE.isOn()) {
+            FencingFPlus2.INSTANCE.fontManager.drawStringWithShadow(module.getName(), (float) (x + 2.3), ScaleUtil.centerTextY((float) y, (float) height), -1);
+            if (ClickGUI.brackets.getValue()) FencingFPlus2.INSTANCE.fontManager.drawStringWithShadow(opened ? "﹀" :  ClickGUI.bracketsKey.getValue() ? module.getKeybind() != Keyboard.KEY_NONE ? "[" + Keyboard.getKeyName(module.getKeybind()) + "]" : "[]" : "[]", (float) ((x + width) - (7.3 + calcSubtract(module))), ScaleUtil.centerTextY((float) y, (float) height), -1);
+        } else {
+            mc.fontRenderer.drawStringWithShadow(module.getName(), (float) (x + 2.3), ScaleUtil.centerTextY((float) y, (float) height), -1);
+            if (ClickGUI.brackets.getValue()) mc.fontRenderer.drawStringWithShadow(opened ? "﹀" :  ClickGUI.bracketsKey.getValue() ? module.getKeybind() != Keyboard.KEY_NONE ? "[" + Keyboard.getKeyName(module.getKeybind()) + "]" : "[]" : "[]", (float) ((x + width) - (7.3 + calcSubtract(module))), ScaleUtil.centerTextY((float) y, (float) height), -1);
+        }
 
         if (opened) {
             double start = 15.0;
@@ -87,6 +95,14 @@ public class ModuleButton extends Button {
                 }
             }
         }
+    }
+
+    public int calcSubtract(Module module) {
+        int subtract = 0;
+        if (module.getKeybind() != Keyboard.KEY_NONE && ClickGUI.brackets.getValue() && ClickGUI.bracketsKey.getValue()) {
+            subtract += Keyboard.getKeyName(module.getKeybind()).length() * 5;
+        }
+        return subtract;
     }
 
     @Override

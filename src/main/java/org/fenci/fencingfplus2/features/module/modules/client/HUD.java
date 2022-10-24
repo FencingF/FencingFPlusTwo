@@ -150,14 +150,14 @@ public class HUD extends Module {
         ScaledResolution resolution = new ScaledResolution(mc);
 
         if (watermark.getValue()) {
-            mc.fontRenderer.drawStringWithShadow(FencingFPlus2.NAME + " v" + FencingFPlus2.VERSION, 2.0f, 2.0f, TEXT_COLOR());
+            FencingFPlus2.INSTANCE.fontManager.drawStringWithShadow(FencingFPlus2.NAME + " v" + FencingFPlus2.VERSION, 2.0f, 2.0f, TEXT_COLOR());
         }
 
-        if (fps.getValue()) mc.fontRenderer.drawStringWithShadow("FPS: " + Minecraft.debugFPS, 2.0f, 12.0f, TEXT_COLOR());
+        if (fps.getValue()) FencingFPlus2.INSTANCE.fontManager.drawStringWithShadow("FPS: " + Minecraft.getDebugFPS(), 2.0f, 12.0f, TEXT_COLOR());
 
 
         if (jumpLength.getValue() && AutoJump.INSTANCE.isOn()) {
-            mc.fontRenderer.drawStringWithShadow(AutoJump.INSTANCE.getClickPos().toString(), 2.0f, 11.0f, TEXT_COLOR());
+            FencingFPlus2.INSTANCE.fontManager.drawStringWithShadow(AutoJump.INSTANCE.getClickPos().toString(), 2.0f, 11.0f, TEXT_COLOR());
         }
 
         if (coords.getValue()) {
@@ -179,50 +179,50 @@ public class HUD extends Module {
             long currZ2 = (long) (Math.round((currZ) * 10.0) / 10.0);
 
             if (mc.player.dimension == 0) {
-                mc.fontRenderer.drawStringWithShadow("XYZ " + "[" + currX2 + " " + currY2 + " " + currZ2 + "]" + " [" + netherX2 + " " + netherY2 + " " + netherZ2 + "]", 2.0f, mc.currentScreen instanceof GuiChat ? resolution.getScaledHeight() - 24 : resolution.getScaledHeight() - 10, 16777215);
+                FencingFPlus2.INSTANCE.fontManager.drawStringWithShadow("XYZ " + "[" + currX2 + " " + currY2 + " " + currZ2 + "]" + " [" + netherX2 + " " + netherY2 + " " + netherZ2 + "]", 2.0f, mc.currentScreen instanceof GuiChat ? resolution.getScaledHeight() - 24 : resolution.getScaledHeight() - 10, 16777215);
             } else if (mc.player.dimension == -1) {
-                mc.fontRenderer.drawStringWithShadow("XYZ " + "[" + currX2 + " " + currY2 + " " + currZ2 + "]" + " [" + currX2 * 8 + " " + currY2 + " " + currZ2 * 8 + "]", 2.0f, mc.currentScreen instanceof GuiChat ? resolution.getScaledHeight() - 24 : resolution.getScaledHeight() - 10, 0xd3443d);
+                FencingFPlus2.INSTANCE.fontManager.drawStringWithShadow("XYZ " + "[" + currX2 + " " + currY2 + " " + currZ2 + "]" + " [" + currX2 * 8 + " " + currY2 + " " + currZ2 * 8 + "]", 2.0f, mc.currentScreen instanceof GuiChat ? resolution.getScaledHeight() - 24 : resolution.getScaledHeight() - 10, 0xd3443d);
             } else if (mc.player.dimension == 1) {
-                mc.fontRenderer.drawStringWithShadow("XYZ " + "[" + currX2 + " " + currY2 + " " + currZ2 + "]", 2.0f, mc.currentScreen instanceof GuiChat ? resolution.getScaledHeight() - 24 : resolution.getScaledHeight() - 10, 0xd65df5);
+                FencingFPlus2.INSTANCE.fontManager.drawStringWithShadow("XYZ " + "[" + currX2 + " " + currY2 + " " + currZ2 + "]", 2.0f, mc.currentScreen instanceof GuiChat ? resolution.getScaledHeight() - 24 : resolution.getScaledHeight() - 10, 0xd65df5);
             }
         }
         //fps and watermark broken
         if (direction.getValue()) {
             if (mc.player.dimension == 0) {
-                mc.fontRenderer.drawStringWithShadow(assembleDirection(), 2.0f, resolution.getScaledHeight() - getDirectionY(), 16777215);
+                FencingFPlus2.INSTANCE.fontManager.drawStringWithShadow(assembleDirection(), 2.0f, resolution.getScaledHeight() - getDirectionY(), 16777215);
             } else if (mc.player.dimension == -1) {
-                mc.fontRenderer.drawStringWithShadow(assembleDirection(), 2.0f, resolution.getScaledHeight() - getDirectionY(), 0xd3443d);
+                FencingFPlus2.INSTANCE.fontManager.drawStringWithShadow(assembleDirection(), 2.0f, resolution.getScaledHeight() - getDirectionY(), 0xd3443d);
             } else if (mc.player.dimension == 1) {
-                mc.fontRenderer.drawStringWithShadow(assembleDirection(), 2.0f, resolution.getScaledHeight() - getDirectionY(), 0xd65df5);
+                FencingFPlus2.INSTANCE.fontManager.drawStringWithShadow(assembleDirection(), 2.0f, resolution.getScaledHeight() - getDirectionY(), 0xd65df5);
             }
         }
 /*
         if(fps.getValue() && (mc.player != null || mc.world != null)) {
-            mc.fontRenderer.drawStringWithShadow(("FPS: " + Minecraft.debugFPS), 2.0f, getPingandFPSHeight()[0], TEXT_COLOR());
+            FencingFPlus2.INSTANCE.fontManager.drawStringWithShadow(("FPS: " + Minecraft.debugFPS), 2.0f, getPingandFPSHeight()[0], TEXT_COLOR());
         }
         if(ping.getValue() && (mc.player != null || mc.world != null)) {
-            mc.fontRenderer.drawStringWithShadow(("Ping: " + getPing()), 2.0f, getPingandFPSHeight()[1], TEXT_COLOR());
+            FencingFPlus2.INSTANCE.fontManager.drawStringWithShadow(("Ping: " + getPing()), 2.0f, getPingandFPSHeight()[1], TEXT_COLOR());
         }
         if(entityList.getValue()) {
             if(playersOnly.getValue()) {
                 if(!mc.world.playerEntities.isEmpty()) {
-                    mc.world.playerEntities.sort(Comparator.comparingInt((entityPlayer) -> -mc.fontRenderer.getStringWidth(entityPlayer.getName())));
+                    mc.world.playerEntities.sort(Comparator.comparingInt((entityPlayer) -> -FencingFPlus2.INSTANCE.fontManager.getStringWidth(entityPlayer.getName())));
                     float yy = 2.0f;
                     for(EntityPlayer player : mc.world.playerEntities) {
                         String display = player.getName();
-                        mc.fontRenderer.drawStringWithShadow(display, getEntityListHeight(), yy, TEXT_COLOR());
-                        yy += mc.fontRenderer.FONT_HEIGHT + 1.5f;
+                        FencingFPlus2.INSTANCE.fontManager.drawStringWithShadow(display, getEntityListHeight(), yy, TEXT_COLOR());
+                        yy += FencingFPlus2.INSTANCE.fontManager.getTextHeight() + 1.5f;
                     }
                 }
             }
             if(!playersOnly.getValue()) {
                 if(!mc.world.loadedEntityList.isEmpty()) {
-                    mc.world.loadedEntityList.sort(Comparator.comparingInt((entity) -> -mc.fontRenderer.getStringWidth(entity.getName())));
+                    mc.world.loadedEntityList.sort(Comparator.comparingInt((entity) -> -FencingFPlus2.INSTANCE.fontManager.getStringWidth(entity.getName())));
                     float yy = 2.0f;
                     for(Entity entity : mc.world.loadedEntityList) {
                         String display = entity.getName();
-                        mc.fontRenderer.drawStringWithShadow(display, getEntityListHeight(), yy, TEXT_COLOR());
-                        yy += mc.fontRenderer.FONT_HEIGHT + 1.5f;
+                        FencingFPlus2.INSTANCE.fontManager.drawStringWithShadow(display, getEntityListHeight(), yy, TEXT_COLOR());
+                        yy += FencingFPlus2.INSTANCE.fontManager.getTextHeight() + 1.5f;
                     }
                 }
             }
@@ -238,7 +238,7 @@ public class HUD extends Module {
 //            GlStateManager.enableDepth();
 //            HUD.itemRender.zLevel = 200.0f;
 //            itemRender.renderItemAndEffectIntoGUI(totemStack, x, y);
-//            itemRender.renderItemOverlayIntoGUI(mc.fontRenderer, totemStack, x, y, "");
+//            itemRender.renderItemOverlayIntoGUI(FencingFPlus2.INSTANCE.fontManager, totemStack, x, y, "");
 //            HUD.itemRender.zLevel = 0.0f;
 //            GlStateManager.enableTexture2D();
 //            GlStateManager.disableLighting();
@@ -265,12 +265,12 @@ public class HUD extends Module {
                 GlStateManager.disableLighting();
                 GlStateManager.disableDepth();
                 String s = is.getCount() > 1 ? is.getCount() + "" : "";
-                mc.fontRenderer.drawStringWithShadow(s, (float) (x + 19 - 2 - mc.fontRenderer.getStringWidth(s)), (float) (y + 9), 0xFFFFFF);
+                FencingFPlus2.INSTANCE.fontManager.drawStringWithShadow(s, (float) (x + 19 - 2 - FencingFPlus2.INSTANCE.fontManager.getStringWidth(s)), (float) (y + 9), 0xFFFFFF);
                 if (!percentage.getValue()) continue;
                 float green = ((float) is.getMaxDamage() - (float) is.getItemDamage()) / (float) is.getMaxDamage();
                 float red = 1.0f - green;
                 int dmg = 100 - (int) (red * 100.0f);
-                mc.fontRenderer.drawStringWithShadow(dmg + "", (float) (x + 8 - mc.fontRenderer.getStringWidth(dmg + "") / 2), (float) (y - 11), ColorUtil.toHex((int) (red * 255.0f), (int) (green * 255.0f), 0));
+                FencingFPlus2.INSTANCE.fontManager.drawStringWithShadow(dmg + "", (float) (x + 8 - FencingFPlus2.INSTANCE.fontManager.getStringWidth(dmg + "") / 2), (float) (y - 11), ColorUtil.toHex((int) (red * 255.0f), (int) (green * 255.0f), 0));
             }
             GlStateManager.enableDepth();
             GlStateManager.disableLighting();
@@ -282,13 +282,13 @@ public class HUD extends Module {
                     .collect(Collectors.toList());
 
             if (!modules.isEmpty()) {
-                modules.sort(Comparator.comparingInt((mod) -> -mc.fontRenderer.getStringWidth(mod.getFullDisplay())));
+                modules.sort(Comparator.comparingInt((mod) -> -FencingFPlus2.INSTANCE.fontManager.getStringWidth(mod.getFullDisplay())));
 
                 float y = 2.0f;
-                for (Module module : modules) {
+                for (Module module : modules) { 
                     String display = module.getFullDisplay();
-                    mc.fontRenderer.drawStringWithShadow(display, resolution.getScaledWidth() - mc.fontRenderer.getStringWidth(display) - 2.0f, y, TEXT_COLOR());
-                    y += mc.fontRenderer.FONT_HEIGHT + 1.5f;
+                    FencingFPlus2.INSTANCE.fontManager.drawStringWithShadow(display, resolution.getScaledWidth() - FencingFPlus2.INSTANCE.fontManager.getStringWidth(display) - 2.0f, y, TEXT_COLOR());
+                    y += FencingFPlus2.INSTANCE.fontManager.getTextHeight() + 1.5f;
                 }
             }
         }

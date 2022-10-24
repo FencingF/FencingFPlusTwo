@@ -9,6 +9,7 @@ import org.fenci.fencingfplus2.events.network.ConnectionEvent;
 import org.fenci.fencingfplus2.events.player.EntitySpawnEvent;
 import org.fenci.fencingfplus2.features.module.Module;
 import org.fenci.fencingfplus2.features.module.modules.client.ClickGUI;
+import org.fenci.fencingfplus2.features.module.modules.client.HUD;
 import org.fenci.fencingfplus2.features.module.modules.player.ChestSwap;
 import org.fenci.fencingfplus2.setting.Setting;
 import org.fenci.fencingfplus2.util.client.ClientMessage;
@@ -25,6 +26,8 @@ public class Notifier extends Module {
     public final Setting<Boolean> visualrange = new Setting<>("VisualRange", true);
     public final Setting<Boolean> logOuts = new Setting<>("LogOuts", false);
     public final Setting<Boolean> totemwarning = new Setting<>("NoTotemWarning", false);
+    public static final Setting<BracketColor> bracketColor = new Setting<>("BracketColor", BracketColor.Black);
+    public static final Setting<NameColor> nameColor = new Setting<>("NameColor", NameColor.Red);
     private final Timer timer = new Timer();
 
     public Notifier() {
@@ -95,5 +98,14 @@ public class Notifier extends Module {
             }
         } catch (NullPointerException ignored) {
         }
+    }
+
+    public enum BracketColor {
+        DarkRed, Red, Gold, Yellow, DarkGreen, Green, Aqua, DarkAqua, DarkBlue, Blue, LightPurple, DarkPurple, White, Gray, DarkGray, Black
+    }
+
+    public enum NameColor {
+        DarkRed, Red, Gold, Yellow, DarkGreen, Green, Aqua, DarkAqua, DarkBlue, Blue, LightPurple, DarkPurple, White, Gray, DarkGray, Black
+
     }
 }

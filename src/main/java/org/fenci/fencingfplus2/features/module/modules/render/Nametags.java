@@ -16,7 +16,9 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.fenci.fencingfplus2.FencingFPlus2;
 import org.fenci.fencingfplus2.features.module.Module;
+import org.fenci.fencingfplus2.features.module.modules.client.CustomFont;
 import org.fenci.fencingfplus2.setting.Setting;
 import org.fenci.fencingfplus2.util.client.MathUtil;
 import org.fenci.fencingfplus2.util.render.ColorUtil;
@@ -91,7 +93,11 @@ public class Nametags extends Module {
 
         RenderUtil.drawBorderedRect(-width - 3, 8.0, width + 2, 20.0, 1.2, 1962934272, c.getRGB());
 
-        mc.fontRenderer.drawStringWithShadow(name, (float) (-width), 10.0f, getHealthColor(player));
+        if (CustomFont.INSTANCE.isOn()) {
+            FencingFPlus2.INSTANCE.fontManager.drawStringWithShadow(name, (float) (-width), 10.0f, getHealthColor(player));
+        } else {
+            mc.fontRenderer.drawStringWithShadow(name, (float) (-width), 10.0f, getHealthColor(player));
+        }
 
         int xOffset = 0;
         for (final ItemStack armourStack : player.inventory.armorInventory) {

@@ -11,12 +11,13 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.item.ItemAir;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.play.client.CPacketPlayer;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import org.fenci.fencingfplus2.FencingFPlus2;
 import org.fenci.fencingfplus2.events.player.MoveEvent;
 import org.fenci.fencingfplus2.util.Globals;
@@ -42,6 +43,49 @@ public class PlayerUtil implements Globals {
             return process.getUUID();
         } catch (Exception e) {
             return null;
+        }
+    }
+
+    public static void centerPlayer() {
+        mc.player.setVelocity(0.0D, 0.0D, 0.0D);
+        mc.player.setPosition(Math.floor(mc.player.posX) + 0.5, mc.player.posY, Math.floor(mc.player.posZ) + 0.5);
+        mc.player.connection.sendPacket(new CPacketPlayer.Position(Math.floor(mc.player.posX) + 0.5, mc.player.posY, Math.floor(mc.player.posZ) + 0.5, true));
+    }
+
+    public static float[] getAngleToBlock(BlockPos pos) {
+        Vec3d eyesPos = new Vec3d(mc.player.posX, mc.player.posY + mc.player.getEyeHeight(), mc.player.posZ);
+        Vec3d posVec = new Vec3d(pos.getX(), pos.getY(), pos.getZ());
+        double diffX = posVec.x - eyesPos.x;
+        double diffY = posVec.y - eyesPos.y;
+        double diffZ = posVec.z - eyesPos.z;
+        double diffXZ = Math.sqrt(diffX * diffX + diffZ * diffZ);
+        float yaw = (float) Math.toDegrees(Math.atan2(diffZ, diffX)) - 90.0F;
+        float pitch = (float) (-Math.toDegrees(Math.atan2(diffY, diffXZ)));
+        return new float[]{mc.player.rotationYaw + MathHelper.wrapDegrees(yaw - mc.player.rotationYaw), mc.player.rotationPitch + MathHelper.wrapDegrees(pitch - mc.player.rotationPitch)};
+    }
+
+    public static void switchToBestTool(BlockPos pos) {
+        int bestSlot = -1;
+        float bestSpeed = 1.0f;
+        for (int i = 0; i < 9; ++i) {
+            final ItemStack stack = mc.player.inventory.getStackInSlot(i);
+            if (stack != ItemStack.EMPTY) {
+                final float speed = stack.getDestroySpeed(mc.world.getBlockState(pos));
+                if (speed > 1.0f) {
+                    if (speed > bestSpeed) {
+                        bestSlot = i;
+                        bestSpeed = speed;
+                    }
+                    if (speed == bestSpeed && mc.player.inventory.getStackInSlot(bestSlot).getDestroySpeed(mc.world.getBlockState(pos)) < speed) {
+                        bestSlot = i;
+                        bestSpeed = speed;
+                    }
+                }
+            }
+        }
+        if (bestSlot != -1) {
+            mc.player.inventory.currentItem = bestSlot;
+            mc.playerController.updateController();
         }
     }
 

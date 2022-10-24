@@ -5,6 +5,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraftforge.common.MinecraftForge;
+import org.fenci.fencingfplus2.features.module.modules.chat.Notifier;
+import org.fenci.fencingfplus2.features.module.modules.client.ClickGUI;
 import org.fenci.fencingfplus2.features.module.modules.client.HUD;
 
 import java.awt.*;
@@ -31,8 +33,12 @@ public class ColorUtil {
         return Color.getHSBColor((float) (rainbowState % 360.0 / 360.0), saturation / 255.0f, brightness / 255.0f);
     }
 
-    public static ChatFormatting getDimentionColor(int dimention) {
-        switch (dimention) {
+    public static int displayColor() {
+        return new Color(ClickGUI.getred.getValue(), ClickGUI.getgreen.getValue(), ClickGUI.getblue.getValue()).getRGB();
+    }
+
+    public static ChatFormatting getDimentionColor(int dimension) {
+        switch (dimension) {
             case -1:
                 return ChatFormatting.DARK_RED;
             case 0:
@@ -65,105 +71,105 @@ public class ColorUtil {
         return 0xFF000000 | damageColor;
     }
 
-    public static ChatFormatting getNameColorFromSetting(HUD.NameColor setting) {
-        if (setting.equals(HUD.NameColor.DarkRed)) {
+    public static ChatFormatting getNameColorFromSetting(Notifier.NameColor setting) {
+        if (setting.equals(Notifier.NameColor.DarkRed)) {
             nameColorFromSetting = ChatFormatting.DARK_RED;
         }
-        if (setting.equals(HUD.NameColor.Red)) {
+        if (setting.equals(Notifier.NameColor.Red)) {
             nameColorFromSetting = ChatFormatting.RED;
         }
-        if (setting.equals(HUD.NameColor.Gold)) {
+        if (setting.equals(Notifier.NameColor.Gold)) {
             nameColorFromSetting = ChatFormatting.GOLD;
         }
-        if (setting.equals(HUD.NameColor.Yellow)) {
+        if (setting.equals(Notifier.NameColor.Yellow)) {
             nameColorFromSetting = ChatFormatting.YELLOW;
         }
-        if (setting.equals(HUD.NameColor.DarkGreen)) {
+        if (setting.equals(Notifier.NameColor.DarkGreen)) {
             nameColorFromSetting = ChatFormatting.DARK_GREEN;
         }
-        if (setting.equals(HUD.NameColor.Green)) {
+        if (setting.equals(Notifier.NameColor.Green)) {
             nameColorFromSetting = ChatFormatting.GREEN;
         }
-        if (setting.equals(HUD.NameColor.Aqua)) {
+        if (setting.equals(Notifier.NameColor.Aqua)) {
             nameColorFromSetting = ChatFormatting.AQUA;
         }
-        if (setting.equals(HUD.NameColor.DarkAqua)) {
+        if (setting.equals(Notifier.NameColor.DarkAqua)) {
             nameColorFromSetting = ChatFormatting.DARK_AQUA;
         }
-        if (setting.equals(HUD.NameColor.DarkBlue)) {
+        if (setting.equals(Notifier.NameColor.DarkBlue)) {
             nameColorFromSetting = ChatFormatting.DARK_BLUE;
         }
-        if (setting.equals(HUD.NameColor.Blue)) {
+        if (setting.equals(Notifier.NameColor.Blue)) {
             nameColorFromSetting = ChatFormatting.BLUE;
         }
-        if (setting.equals(HUD.NameColor.LightPurple)) {
+        if (setting.equals(Notifier.NameColor.LightPurple)) {
             nameColorFromSetting = ChatFormatting.LIGHT_PURPLE;
         }
-        if (setting.equals(HUD.NameColor.DarkPurple)) {
+        if (setting.equals(Notifier.NameColor.DarkPurple)) {
             nameColorFromSetting = ChatFormatting.DARK_PURPLE;
         }
-        if (setting.equals(HUD.NameColor.White)) {
+        if (setting.equals(Notifier.NameColor.White)) {
             nameColorFromSetting = ChatFormatting.WHITE;
         }
-        if (setting.equals(HUD.NameColor.Gray)) {
+        if (setting.equals(Notifier.NameColor.Gray)) {
             nameColorFromSetting = ChatFormatting.GRAY;
         }
-        if (setting.equals(HUD.NameColor.DarkGray)) {
+        if (setting.equals(Notifier.NameColor.DarkGray)) {
             nameColorFromSetting = ChatFormatting.DARK_GRAY;
         }
-        if (setting.equals(HUD.NameColor.Black)) {
+        if (setting.equals(Notifier.NameColor.Black)) {
             nameColorFromSetting = ChatFormatting.BLACK;
         }
         return nameColorFromSetting;
     }
 
-    public static ChatFormatting getBracketColorFromSetting(HUD.BracketColor setting) {
-        if (setting.equals(HUD.BracketColor.DarkRed)) {
+    public static ChatFormatting getBracketColorFromSetting(Notifier.BracketColor setting) {
+        if (setting.equals(Notifier.BracketColor.DarkRed)) {
             nameBracketFromSetting = ChatFormatting.DARK_RED;
         }
-        if (setting.equals(HUD.BracketColor.Red)) {
+        if (setting.equals(Notifier.BracketColor.Red)) {
             nameBracketFromSetting = ChatFormatting.RED;
         }
-        if (setting.equals(HUD.BracketColor.Gold)) {
+        if (setting.equals(Notifier.BracketColor.Gold)) {
             nameBracketFromSetting = ChatFormatting.GOLD;
         }
-        if (setting.equals(HUD.BracketColor.Yellow)) {
+        if (setting.equals(Notifier.BracketColor.Yellow)) {
             nameBracketFromSetting = ChatFormatting.YELLOW;
         }
-        if (setting.equals(HUD.BracketColor.DarkGreen)) {
+        if (setting.equals(Notifier.BracketColor.DarkGreen)) {
             nameBracketFromSetting = ChatFormatting.DARK_GREEN;
         }
-        if (setting.equals(HUD.BracketColor.Green)) {
+        if (setting.equals(Notifier.BracketColor.Green)) {
             nameBracketFromSetting = ChatFormatting.GREEN;
         }
-        if (setting.equals(HUD.BracketColor.Aqua)) {
+        if (setting.equals(Notifier.BracketColor.Aqua)) {
             nameBracketFromSetting = ChatFormatting.AQUA;
         }
-        if (setting.equals(HUD.BracketColor.DarkAqua)) {
+        if (setting.equals(Notifier.BracketColor.DarkAqua)) {
             nameBracketFromSetting = ChatFormatting.DARK_AQUA;
         }
-        if (setting.equals(HUD.BracketColor.DarkBlue)) {
-
+        if (setting.equals(Notifier.BracketColor.DarkBlue)) {
+            nameBracketFromSetting = ChatFormatting.DARK_BLUE;
         }
-        if (setting.equals(HUD.BracketColor.Blue)) {
+        if (setting.equals(Notifier.BracketColor.Blue)) {
             nameBracketFromSetting = ChatFormatting.BLUE;
         }
-        if (setting.equals(HUD.BracketColor.LightPurple)) {
+        if (setting.equals(Notifier.BracketColor.LightPurple)) {
             nameBracketFromSetting = ChatFormatting.LIGHT_PURPLE;
         }
-        if (setting.equals(HUD.BracketColor.DarkPurple)) {
+        if (setting.equals(Notifier.BracketColor.DarkPurple)) {
             nameBracketFromSetting = ChatFormatting.DARK_PURPLE;
         }
-        if (setting.equals(HUD.BracketColor.White)) {
+        if (setting.equals(Notifier.BracketColor.White)) {
             nameBracketFromSetting = ChatFormatting.WHITE;
         }
-        if (setting.equals(HUD.BracketColor.Gray)) {
+        if (setting.equals(Notifier.BracketColor.Gray)) {
             nameBracketFromSetting = ChatFormatting.GRAY;
         }
-        if (setting.equals(HUD.BracketColor.DarkGray)) {
+        if (setting.equals(Notifier.BracketColor.DarkGray)) {
             nameBracketFromSetting = ChatFormatting.DARK_GRAY;
         }
-        if (setting.equals(HUD.BracketColor.Black)) {
+        if (setting.equals(Notifier.BracketColor.Black)) {
             nameBracketFromSetting = ChatFormatting.BLACK;
         }
         return nameBracketFromSetting;
