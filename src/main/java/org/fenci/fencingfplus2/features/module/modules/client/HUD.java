@@ -153,7 +153,7 @@ public class HUD extends Module {
             FencingFPlus2.INSTANCE.fontManager.drawStringWithShadow(FencingFPlus2.NAME + " v" + FencingFPlus2.VERSION, 2.0f, 2.0f, TEXT_COLOR());
         }
 
-        if (fps.getValue()) FencingFPlus2.INSTANCE.fontManager.drawStringWithShadow("FPS: " + Minecraft.getDebugFPS(), 2.0f, 12.0f, TEXT_COLOR());
+        if (fps.getValue()) FencingFPlus2.INSTANCE.fontManager.drawStringWithShadow("FPS: " + Minecraft.debugFPS, 2.0f, 12.0f, TEXT_COLOR());
 
 
         if (jumpLength.getValue() && AutoJump.INSTANCE.isOn()) {
